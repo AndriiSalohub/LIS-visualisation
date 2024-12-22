@@ -137,6 +137,12 @@ const Visualizationpage = () => {
     setSavedExamples((prev) => [...prev, sequence]);
   };
 
+  const handleEditExample = (index, newSequence) => {
+    setSavedExamples(
+      savedExamples.map((seq, idx) => (idx === index ? newSequence : seq)),
+    );
+  };
+
   return (
     <div className="w-full p-2 sm:p-4 mx-auto max-w-[1400px]">
       {selectedExample !== null && (
@@ -149,6 +155,9 @@ const Visualizationpage = () => {
               resetVisualization();
               setSelectedExample(null);
             }}
+            onEdit={(newSequence) =>
+              handleEditExample(selectedExample, newSequence)
+            }
           />
         </Dialog>
       )}
