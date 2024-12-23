@@ -4,6 +4,7 @@ import "../src/assets/styles/index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Homepage from "./pages/Homepage.jsx";
 import Visualizationpage from "./pages/Visualizationpage.jsx";
+import Examplespage from "./pages/Examplespage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "visualization",
         element: <Visualizationpage />,
+      },
+      {
+        path: "examples",
+        element: <Examplespage />,
       },
     ],
   },

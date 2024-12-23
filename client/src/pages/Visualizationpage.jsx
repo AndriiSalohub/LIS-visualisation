@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Play, Pause, StepForward, StepBack, Save, X, Eye } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import SequenceDialog from "../components/SequenceDialog";
+import useExamples from "../store";
 
 const formatSequence = (seq) => {
   if (seq.length <= 4) return seq.join(", ");
@@ -80,12 +81,19 @@ const Visualizationpage = () => {
   });
   const [minRange, setMinRange] = useState(0);
   const [maxRange, setMaxRange] = useState(100);
+  const {
+    examples,
+    addExample,
+    getSelectedExamples,
+    removeExample,
+    editExample,
+  } = useExamples();
 
   const animationRef = useRef(null);
   const transitionDuration = 1000 / (animationSpeed * 2);
 
-  const handleDeleteExample = (indexToDelete) => {
-    setSavedExamples(savedExamples.filter((_, idx) => idx !== indexToDelete));
+  const handleDeleteExample = (idToDelete) => {
+    removeExample(idToDelete);
   };
 
   const getNextState = (currentState) => {
@@ -150,6 +158,12 @@ const Visualizationpage = () => {
   };
 
   useEffect(() => {
+    const selectedLibraryExamples = getSelectedExamples();
+
+    setSavedExamples(selectedLibraryExamples);
+  }, [examples]);
+
+  useEffect(() => {
     if (isPlaying && isAutoMode) {
       animationRef.current = setInterval(() => {
         if (algorithmState.currentI !== -2) {
@@ -184,13 +198,22 @@ const Visualizationpage = () => {
   };
 
   const handleSaveExample = () => {
-    setSavedExamples((prev) => [...prev, sequence]);
+    addExample({
+      name: `Sequence ${examples.length + 1}`,
+      sequence: sequence,
+      selected: true,
+    });
   };
 
-  const handleEditExample = (index, newSequence) => {
-    setSavedExamples(
-      savedExamples.map((seq, idx) => (idx === index ? newSequence : seq)),
-    );
+  const handleEditExample = (id, newSequence) => {
+    console.log({
+      ...savedExamples.filter((example) => example.id === id)[0],
+      sequence: newSequence,
+    });
+    editExample({
+      ...savedExamples.filter((example) => example.id === id)[0],
+      sequence: newSequence,
+    });
   };
 
   return (
@@ -198,10 +221,18 @@ const Visualizationpage = () => {
       {selectedExample !== null && (
         <Dialog open={true} onOpenChange={() => setSelectedExample(null)}>
           <SequenceDialog
-            sequence={savedExamples[selectedExample]}
+            sequence={
+              savedExamples.filter(
+                (example) => example.id === selectedExample,
+              )[0].sequence
+            }
             onClose={() => setSelectedExample(null)}
             onLoad={() => {
-              setSequence(savedExamples[selectedExample]);
+              setSequence(
+                savedExamples.filter(
+                  (example) => example.id === selectedExample,
+                )[0].sequence,
+              );
               resetVisualization();
               setSelectedExample(null);
             }}
@@ -348,21 +379,21 @@ const Visualizationpage = () => {
               <div className="space-y-2">
                 <div className="text-sm font-medium">Збережені приклади:</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[200px] overflow-y-auto pr-1">
-                  {savedExamples.map((example, idx) => (
+                  {savedExamples.map((example) => (
                     <div
-                      key={idx}
+                      key={example.id}
                       className="group relative flex items-center bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors"
                     >
                       <Button
                         variant="ghost"
                         className="w-full h-auto text-left justify-start py-1 px-2"
                         onClick={() => {
-                          setSequence(example);
+                          setSequence(example.sequence);
                           resetVisualization();
                         }}
                       >
                         <span className="text-xs truncate">
-                          [{formatSequence(example)}]
+                          [{formatSequence(example.sequence)}]
                         </span>
                       </Button>
                       <div className="absolute right-1 flex opacity-0 group-hover:opacity-100 transition-opacity">
@@ -370,14 +401,14 @@ const Visualizationpage = () => {
                           variant="ghost"
                           size="icon"
                           className="mr-1"
-                          onClick={() => setSelectedExample(idx)}
+                          onClick={() => setSelectedExample(example.id)}
                         >
                           <Eye className="h-4 w-4 text-gray-500 hover:text-gray-700" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleDeleteExample(idx)}
+                          onClick={() => handleDeleteExample(example.id)}
                         >
                           <X className="h-4 w-4 text-gray-500 hover:text-gray-700" />
                         </Button>
