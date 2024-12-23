@@ -13,6 +13,53 @@ const formatSequence = (seq) => {
   return `${seq.slice(0, 3).join(", ")}...${seq[seq.length - 1]}`;
 };
 
+const getStepDescription = (state, sequence) => {
+  const { currentI, currentJ, d, prev, lis } = state;
+
+  if (currentI === -1) {
+    return "Ініціалізація масивів: масив довжин (d) заповнюється одиницями, масив попередніх індексів (prev) заповнюється -1.";
+  }
+
+  if (currentI === -2) {
+    return `Алгоритм завершено. Знайдена найдовша зростаюча підпослідовність довжиною ${
+      lis.length
+    }: [${lis.join(", ")}].`;
+  }
+
+  if (currentJ < currentI) {
+    const comparison = sequence[currentJ] < sequence[currentI];
+    const wouldIncrease = comparison && d[currentJ] + 1 > d[currentI];
+
+    let description = `Порівнюємо елементи: ${sequence[currentJ]} (індекс ${currentJ}) і ${sequence[currentI]} (індекс ${currentI}). `;
+
+    if (comparison) {
+      if (wouldIncrease) {
+        description += `Оскільки ${sequence[currentJ]} < ${sequence[currentI]} і довжина підпослідовності збільшиться (${d[currentJ]} + 1 > ${d[currentI]}), `;
+        description += `оновлюємо d[${currentI}] = ${
+          d[currentJ] + 1
+        } та prev[${currentI}] = ${currentJ}.`;
+      } else {
+        description += `Хоча ${sequence[currentJ]} < ${sequence[currentI]}, але поточна довжина ${d[currentI]} вже оптимальна (${d[currentJ]} + 1 ≤ ${d[currentI]}).`;
+      }
+    } else {
+      description += `Пропускаємо, оскільки ${sequence[currentJ]} ≥ ${sequence[currentI]}.`;
+    }
+
+    return description;
+  }
+
+  if (currentJ === currentI) {
+    if (currentI === sequence.length - 1) {
+      return "Завершено обробку всіх елементів. Починаємо відновлення найдовшої зростаючої підпослідовності.";
+    }
+    return `Завершено порівняння для індексу ${currentI}. Переходимо до наступного елемента ${
+      sequence[currentI + 1]
+    } (індекс ${currentI + 1}).`;
+  }
+
+  return "Відновлення найдовшої зростаючої підпослідовності...";
+};
+
 const Visualizationpage = () => {
   const [sequence, setSequence] = useState([3, 10, 2, 1, 20]);
   const [isAutoMode, setIsAutoMode] = useState(false);
@@ -23,6 +70,7 @@ const Visualizationpage = () => {
   const [stateHistory, setStateHistory] = useState([]);
   const [currentHistoryIndex, setCurrentHistoryIndex] = useState(-1);
   const [selectedExample, setSelectedExample] = useState(null);
+  const [showDetailedView, setShowDetailedView] = useState(true);
   const [algorithmState, setAlgorithmState] = useState({
     d: [],
     prev: [],
@@ -30,6 +78,8 @@ const Visualizationpage = () => {
     currentJ: -1,
     lis: [],
   });
+  const [minRange, setMinRange] = useState(0);
+  const [maxRange, setMaxRange] = useState(100);
 
   const animationRef = useRef(null);
   const transitionDuration = 1000 / (animationSpeed * 2);
@@ -114,7 +164,7 @@ const Visualizationpage = () => {
 
   const generateRandomSequence = (size) => {
     const newSeq = Array.from({ length: size }, () =>
-      Math.floor(Math.random() * 100),
+      Math.floor(Math.random() * (maxRange - minRange + 1) + minRange),
     );
     setSequence(newSeq);
     resetVisualization();
@@ -206,6 +256,14 @@ const Visualizationpage = () => {
                 </div>
               </div>
 
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={showDetailedView}
+                  onCheckedChange={setShowDetailedView}
+                />
+                <span>Детальна візуалізація</span>
+              </div>
+
               <div className="space-y-2">
                 <div className="text-sm">Швидкість анімації</div>
                 <Slider
@@ -234,6 +292,29 @@ const Visualizationpage = () => {
 
           <Card className="p-3 sm:p-4 bg-white">
             <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="text-sm font-medium">Діапазон генерації:</div>
+                <div className="flex gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Мін"
+                    className="w-24"
+                    value={minRange}
+                    onChange={(e) => setMinRange(parseInt(e.target.value) || 0)}
+                  />
+                  <span className="self-center">-</span>
+                  <Input
+                    type="number"
+                    placeholder="Макс"
+                    className="w-24"
+                    value={maxRange}
+                    onChange={(e) =>
+                      setMaxRange(parseInt(e.target.value) || 100)
+                    }
+                  />
+                </div>
+              </div>
+
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                 <Input
                   type="number"
@@ -314,7 +395,14 @@ const Visualizationpage = () => {
           </Card>
         </div>
 
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-8 space-y-4">
+          <Card className="p-3 sm:p-4 bg-white">
+            <div className="text-sm font-medium mb-2">Поточний крок:</div>
+            <div className="text-base mb-4">
+              {getStepDescription(algorithmState, sequence)}
+            </div>
+          </Card>
+
           <Card className="p-3 sm:p-6 bg-gray-50">
             <div className="grid grid-cols-1 gap-4">
               <div className="flex flex-wrap gap-2 justify-center">
@@ -342,8 +430,33 @@ const Visualizationpage = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          </Card>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <Card className="p-3 sm:p-4 bg-white">
+            <div className="space-y-4">
+              <div className="text-sm font-medium">Результат:</div>
+              <div className="flex flex-wrap gap-2">
+                {algorithmState.lis.map((num, idx) => (
+                  <div
+                    key={idx}
+                    className="w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center border rounded-lg bg-gray-400 text-white text-sm sm:text-base"
+                  >
+                    {num}
+                  </div>
+                ))}
+                {algorithmState.lis.length === 0 && (
+                  <div className="text-gray-500">
+                    Послідовність буде показана після завершення алгоритму
+                  </div>
+                )}
+              </div>
+            </div>
+          </Card>
+
+          {showDetailedView && (
+            <Card className="p-3 sm:p-4 bg-white">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <div className="text-sm font-medium">Масив довжини (d):</div>
                   <div className="flex flex-wrap gap-2">
@@ -379,8 +492,8 @@ const Visualizationpage = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          )}
         </div>
       </div>
     </div>

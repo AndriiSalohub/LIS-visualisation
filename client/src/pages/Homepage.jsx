@@ -27,7 +27,7 @@ const Homepage = () => {
             знаходження найдовшої зростаючої підпослідовності
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12 px-4">
-            <NavLink to="/documentation">
+            <NavLink to="/visualization">
               <Button
                 size="lg"
                 className="gap-2 w-full sm:w-auto bg-gray-900 hover:bg-black transition-colors"
