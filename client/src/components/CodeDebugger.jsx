@@ -71,7 +71,7 @@ const CodeDebugger = ({ algorithmState, sequence }) => {
   const { section: activeSection, lines: activeLines } = getActiveLines();
 
   return (
-    <div className="mt-4">
+    <div className="fixed bottom-4 left-4 z-10 w-96">
       <Button
         variant="outline"
         className="w-full justify-between"
@@ -86,8 +86,8 @@ const CodeDebugger = ({ algorithmState, sequence }) => {
       </Button>
 
       {isOpen && (
-        <Card className="mt-2 p-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <Card className="mt-2 p-4 max-h-[60vh] overflow-y-auto bg-white">
+          <div className="space-y-4">
             {Object.entries(codeStructure).map(([key, section]) => (
               <div
                 key={key}
