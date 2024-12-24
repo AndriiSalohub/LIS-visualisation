@@ -8,6 +8,7 @@ import { Play, Pause, StepForward, StepBack, Save, X, Eye } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import SequenceDialog from "../components/SequenceDialog";
 import useExamples from "../store";
+import CodeDebugger from "../components/CodeDebugger";
 
 const formatSequence = (seq) => {
   if (seq.length <= 4) return seq.join(", ");
@@ -15,7 +16,7 @@ const formatSequence = (seq) => {
 };
 
 const getStepDescription = (state, sequence) => {
-  const { currentI, currentJ, d, prev, lis } = state;
+  const { currentI, currentJ, d, lis } = state;
 
   if (currentI === -1) {
     return "Ініціалізація масивів: масив довжин (d) заповнюється одиницями, масив попередніх індексів (prev) заповнюється -1.";
@@ -88,6 +89,7 @@ const VisualizationPage = () => {
     removeExample,
     editExample,
   } = useExamples();
+  const [showCodeDebugger, setShowCodeDebugger] = useState(false);
 
   const animationRef = useRef(null);
   const transitionDuration = 1000 / (animationSpeed * 2);
@@ -527,6 +529,8 @@ const VisualizationPage = () => {
           )}
         </div>
       </div>
+
+      <CodeDebugger algorithmState={algorithmState} sequence={sequence} />
     </div>
   );
 };
