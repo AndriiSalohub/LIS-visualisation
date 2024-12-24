@@ -61,7 +61,7 @@ const getStepDescription = (state, sequence) => {
   return "Відновлення найдовшої зростаючої підпослідовності...";
 };
 
-const Visualizationpage = () => {
+const VisualizationPage = () => {
   const [sequence, setSequence] = useState([3, 10, 2, 1, 20]);
   const [isAutoMode, setIsAutoMode] = useState(false);
   const [speed, setSpeed] = useState(1);
@@ -531,4 +531,4 @@ const Visualizationpage = () => {
   );
 };
 
-export default Visualizationpage;
+export default VisualizationPage;

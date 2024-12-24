@@ -2,9 +2,10 @@ import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "../src/assets/styles/index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Homepage from "./pages/Homepage.jsx";
-import Visualizationpage from "./pages/Visualizationpage.jsx";
-import Examplespage from "./pages/Examplespage.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import VisualizationPage from "./pages/VisualizationPage.jsx";
+import ExamplesPage from "./pages/ExamplesPage.jsx";
+import DocumentationPage from "./pages/DocumentationPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -13,15 +14,19 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Homepage />,
+        element: <HomePage />,
       },
       {
         path: "visualization",
-        element: <Visualizationpage />,
+        element: <VisualizationPage />,
       },
       {
         path: "examples",
-        element: <Examplespage />,
+        element: <ExamplesPage />,
+      },
+      {
+        path: "documentation",
+        element: <DocumentationPage />,
       },
     ],
   },

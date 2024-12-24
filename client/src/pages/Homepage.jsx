@@ -9,7 +9,7 @@ import {
 import { ChevronRight, Play, Book, Code } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
-const Homepage = () => {
+const HomePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       <section className="container mx-auto px-4 py-12 md:py-12 lg:py-12">
@@ -151,4 +151,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default HomePage;
