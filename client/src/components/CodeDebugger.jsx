@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 const CodeDebugger = ({ algorithmState, sequence }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -85,36 +86,47 @@ const CodeDebugger = ({ algorithmState, sequence }) => {
         )}
       </Button>
 
-      {isOpen && (
-        <Card className="mt-2 p-4 max-h-[60vh] overflow-y-auto bg-white">
-          <div className="space-y-4">
-            {Object.entries(codeStructure).map(([key, section]) => (
-              <div
-                key={key}
-                className={`p-4 rounded-lg ${
-                  activeSection === key ? "bg-gray-100" : "bg-white"
-                }`}
-              >
-                <h3 className="font-medium mb-2">{section.title}</h3>
-                <pre className="text-sm bg-gray-800 text-white p-3 rounded-md overflow-x-auto">
-                  {section.code.map((line, idx) => (
-                    <div
-                      key={idx}
-                      className={`${
-                        activeSection === key && activeLines.includes(idx + 1)
-                          ? "bg-blue-500/30"
-                          : ""
-                      }`}
-                    >
-                      {line}
-                    </div>
-                  ))}
-                </pre>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="mt-2 overflow-hidden"
+          >
+            <Card className="mt-2 p-4 max-h-[60vh] overflow-y-auto bg-white">
+              <div className="space-y-4">
+                {Object.entries(codeStructure).map(([key, section]) => (
+                  <div
+                    key={key}
+                    className={`p-4 rounded-lg ${
+                      activeSection === key ? "bg-gray-100" : "bg-white"
+                    }`}
+                  >
+                    <h3 className="font-medium mb-2">{section.title}</h3>
+                    <pre className="text-sm bg-gray-800 text-white p-3 rounded-md overflow-x-auto">
+                      {section.code.map((line, idx) => (
+                        <div
+                          key={idx}
+                          className={`${
+                            activeSection === key &&
+                            activeLines.includes(idx + 1)
+                              ? "bg-blue-500/30"
+                              : ""
+                          }`}
+                        >
+                          {line}
+                        </div>
+                      ))}
+                    </pre>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </Card>
-      )}
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
