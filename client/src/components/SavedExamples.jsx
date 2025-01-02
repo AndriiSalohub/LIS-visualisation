@@ -1,0 +1,62 @@
+/* eslint-disable react/prop-types */
+import { Button } from "@/components/ui/button";
+
+const SavedExamples = ({
+  savedExamples,
+  setSequence,
+  resetVisualization,
+  setSelectedExample,
+  handleDeleteExample,
+  formatSequence,
+}) => {
+  return (
+    <div className="space-y-2">
+      <div className="text-sm font-medium">Збережені приклади:</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[200px] overflow-y-auto pr-1">
+        {savedExamples.map((example) => (
+          <div
+            key={example.id}
+            className="group relative flex items-center bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors"
+          >
+            <Button
+              variant="ghost"
+              className="w-full h-auto text-left justify-start py-1 px-2"
+              onClick={() => {
+                setSequence(example.sequence);
+                resetVisualization();
+              }}
+            >
+              <span className="text-xs truncate">
+                [{formatSequence(example.sequence)}]
+              </span>
+            </Button>
+            <div className="absolute right-1 flex opacity-0 group-hover:opacity-100 transition-opacity">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="mr-1"
+                onClick={() => setSelectedExample(example.id)}
+              >
+                <Eye className="h-4 w-4 text-gray-500 hover:text-gray-700" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => handleDeleteExample(example.id)}
+              >
+                <X className="h-4 w-4 text-gray-500 hover:text-gray-700" />
+              </Button>
+            </div>
+          </div>
+        ))}
+        {savedExamples.length === 0 && (
+          <div className="text-sm text-gray-500 p-2">
+            Відсутні збережені криклади
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default SavedExamples;

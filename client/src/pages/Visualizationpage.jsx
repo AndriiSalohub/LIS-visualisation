@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Play, Pause, StepForward, StepBack, Save, X, Eye } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import SequenceDialog from "../components/SequenceDialog";
-import useExamples from "../store";
 import CodeDebugger from "../components/CodeDebugger";
 import RangeSelection from "../components/RangeSelection";
+import ControlPanel from "../components/ControlPanel";
+import SavedExamples from "../components/SavedExamples";
+import SequenceDisplay from "../components/SequenceDisplay";
+import DetailedView from "../components/DetailedView";
+import useExamples from "../store";
 
 const formatSequence = (seq) => {
   if (seq.length <= 4) return seq.join(", ");
@@ -302,81 +302,22 @@ const VisualizationPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <div className="lg:col-span-4 space-y-4">
-          <Card className="p-3 sm:p-4 bg-white">
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-2">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={isAutoMode}
-                    onCheckedChange={setIsAutoMode}
-                  />
-                  <span>Автоматичне відтворення</span>
-                </div>
-                <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={stepBack}
-                    disabled={isAutoMode || currentHistoryIndex <= 0}
-                  >
-                    <StepBack className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    disabled={!isAutoMode || algorithmState.currentI === -2}
-                  >
-                    {isPlaying ? (
-                      <Pause className="h-4 w-4" />
-                    ) : (
-                      <Play className="h-4 w-4" />
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={calculateStep}
-                    disabled={isAutoMode || algorithmState.currentI === -2}
-                  >
-                    <StepForward className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={showDetailedView}
-                  onCheckedChange={setShowDetailedView}
-                />
-                <span>Детальна візуалізація</span>
-              </div>
-
-              <div className="space-y-2">
-                <div className="text-sm">Швидкість анімації</div>
-                <Slider
-                  value={[animationSpeed]}
-                  onValueChange={([value]) => setAnimationSpeed(value)}
-                  min={0.5}
-                  max={2}
-                  step={0.1}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="text-sm">Швидкість автоматичного виконання</div>
-                <Slider
-                  value={[speed]}
-                  onValueChange={([value]) => setSpeed(value)}
-                  min={0.5}
-                  max={5}
-                  step={0.5}
-                  className="w-full"
-                />
-              </div>
-            </div>
-          </Card>
+          <ControlPanel
+            isAutoMode={isAutoMode}
+            setIsAutoMode={setIsAutoMode}
+            isPlaying={isPlaying}
+            setIsPlaying={setIsPlaying}
+            showDetailedView={showDetailedView}
+            setShowDetailedView={setShowDetailedView}
+            animationSpeed={animationSpeed}
+            setAnimationSpeed={setAnimationSpeed}
+            speed={speed}
+            setSpeed={setSpeed}
+            stepBack={stepBack}
+            calculateStep={calculateStep}
+            algorithmState={algorithmState}
+            currentHistoryIndex={currentHistoryIndex}
+          />
 
           <Card className="p-3 sm:p-4 bg-white">
             <div className="space-y-4">
@@ -391,52 +332,14 @@ const VisualizationPage = () => {
                 handleSaveExample={handleSaveExample}
                 error={error}
               />
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Збережені приклади:</div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[200px] overflow-y-auto pr-1">
-                  {savedExamples.map((example) => (
-                    <div
-                      key={example.id}
-                      className="group relative flex items-center bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors"
-                    >
-                      <Button
-                        variant="ghost"
-                        className="w-full h-auto text-left justify-start py-1 px-2"
-                        onClick={() => {
-                          setSequence(example.sequence);
-                          resetVisualization();
-                        }}
-                      >
-                        <span className="text-xs truncate">
-                          [{formatSequence(example.sequence)}]
-                        </span>
-                      </Button>
-                      <div className="absolute right-1 flex opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="mr-1"
-                          onClick={() => setSelectedExample(example.id)}
-                        >
-                          <Eye className="h-4 w-4 text-gray-500 hover:text-gray-700" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteExample(example.id)}
-                        >
-                          <X className="h-4 w-4 text-gray-500 hover:text-gray-700" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  {savedExamples.length === 0 && (
-                    <div className="text-sm text-gray-500 p-2">
-                      Відсутні збережені криклади
-                    </div>
-                  )}
-                </div>
-              </div>
+              <SavedExamples
+                savedExamples={savedExamples}
+                setSequence={setSequence}
+                resetVisualization={resetVisualization}
+                setSelectedExample={setSelectedExample}
+                handleDeleteExample={handleDeleteExample}
+                formatSequence={formatSequence}
+              />
             </div>
           </Card>
         </div>
@@ -449,35 +352,11 @@ const VisualizationPage = () => {
             </div>
           </Card>
 
-          <Card className="p-3 sm:p-6 bg-gray-50">
-            <div className="grid grid-cols-1 gap-4">
-              <div className="flex flex-wrap gap-2 justify-center">
-                {sequence.map((num, idx) => (
-                  <div
-                    key={idx}
-                    className={`
-                      w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center
-                      border rounded-lg text-sm sm:text-base
-                      ${
-                        idx === algorithmState.currentI
-                          ? "bg-gray-800 text-white"
-                          : idx === algorithmState.currentJ
-                            ? "bg-gray-600 text-white"
-                            : algorithmState.lis.includes(num)
-                              ? "bg-gray-400 text-white"
-                              : "bg-white"
-                      }
-                    `}
-                    style={{
-                      transition: `all ${transitionDuration}ms ease-in-out`,
-                    }}
-                  >
-                    {num}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Card>
+          <SequenceDisplay
+            sequence={sequence}
+            algorithmState={algorithmState}
+            transitionDuration={transitionDuration}
+          />
 
           <Card className="p-3 sm:p-4 bg-white">
             <div className="space-y-4">
@@ -501,44 +380,10 @@ const VisualizationPage = () => {
           </Card>
 
           {showDetailedView && (
-            <Card className="p-3 sm:p-4 bg-white">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">Масив довжини (d):</div>
-                  <div className="flex flex-wrap gap-2">
-                    {algorithmState.d.map((val, idx) => (
-                      <div
-                        key={idx}
-                        className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center border rounded bg-white text-sm"
-                        style={{
-                          transition: `all ${transitionDuration}ms ease-in-out`,
-                        }}
-                      >
-                        {val}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">
-                    Попередній індексний масив (prev):
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {algorithmState.prev.map((val, idx) => (
-                      <div
-                        key={idx}
-                        className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center border rounded bg-white text-sm"
-                        style={{
-                          transition: `all ${transitionDuration}ms ease-in-out`,
-                        }}
-                      >
-                        {val}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Card>
+            <DetailedView
+              algorithmState={algorithmState}
+              transitionDuration={transitionDuration}
+            />
           )}
         </div>
       </div>
