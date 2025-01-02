@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,7 +27,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Pencil, Trash2, Plus, Check, X } from "lucide-react";
+import { Pencil, Trash2, Plus, Check, X, Upload, Download } from "lucide-react";
 import useExamples from "../store";
 
 const ExamplesPage = () => {
@@ -39,6 +39,73 @@ const ExamplesPage = () => {
   const [newExample, setNewExample] = useState({ name: "", sequence: "" });
   const [errors, setErrors] = useState({ name: "", sequence: "" });
   const [editErrors, setEditErrors] = useState({ name: "", sequence: "" });
+
+  const fileInputRef = useRef(null);
+
+  const handleImport = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const fileContent = await file.text();
+      const parsedData = JSON.parse(fileContent);
+
+      if (!Array.isArray(parsedData)) {
+        console.error("Некоректний формат файлу: Очікується масив.");
+        return;
+      }
+
+      const areValidExamples = parsedData.every((item) => {
+        return (
+          item && typeof item.name === "string" && Array.isArray(item.sequence)
+        );
+      });
+
+      if (!areValidExamples) {
+        console.error(
+          "Некоректний формат файлу: Очікується масив об'єктів з властивостями name (рядок) та sequence(масив чисел).",
+        );
+        return;
+      }
+
+      parsedData.forEach((example) => {
+        if (examples.some((ex) => ex.name === example.name.trim())) {
+          console.error(
+            `Помилка: Приклад з назвою ${example.name} вже існує. Пропускається...`,
+          );
+        } else {
+          addExample({
+            name: example.name.trim(),
+            sequence: example.sequence,
+          });
+        }
+      });
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      console.error("Не вдалося імпортувати дані:", error);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleExport = () => {
+    const dataStr = JSON.stringify(examples, null, 2); // Format with 2 space indentation
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "examples.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const validateSequence = (sequence) => {
     if (!sequence) return "Послідовність обов'язкова";
@@ -125,6 +192,7 @@ const ExamplesPage = () => {
 
   const findLIS = (sequence) => {
     const dp = Array(sequence.length).fill(1);
+
     for (let i = 1; i < sequence.length; i++) {
       for (let j = 0; j < i; j++) {
         if (sequence[i] > sequence[j]) {
@@ -132,6 +200,7 @@ const ExamplesPage = () => {
         }
       }
     }
+
     return Math.max(...dp);
   };
 
@@ -147,6 +216,27 @@ const ExamplesPage = () => {
         </CardHeader>
         <CardContent>
           <div className="flex justify-between items-center mb-6">
+            <div className="flex gap-2 items-center">
+              <input
+                type="file"
+                accept=".json"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={handleFileChange}
+              />
+              <Button
+                onClick={handleImport}
+                className="flex items-center gap-2"
+              >
+                <Upload className="w-4 h-4" /> Імпорт
+              </Button>
+              <Button
+                onClick={handleExport}
+                className="flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" /> Експорт
+              </Button>
+            </div>
             <Dialog
               open={isAddDialogOpen}
               onOpenChange={(open) => {
