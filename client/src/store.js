@@ -4,17 +4,59 @@ const useExamples = create((set, get) => ({
   examples: [
     {
       id: 1,
-      name: "Simple Sequence",
-      sequence: [1, 3, 5, 4, 7],
+      name: "Просте Зростання",
+      sequence: [1, 2, 3, 4, 5],
       selected: false,
     },
     {
       id: 2,
-      name: "Complex Case",
-      sequence: [10, 9, 2, 5, 3, 7, 101, 18],
+      name: "Просте Спадання",
+      sequence: [5, 4, 3, 2, 1],
       selected: false,
     },
-    { id: 3, name: "Edge Case", sequence: [1], selected: false },
+    { id: 3, name: "Граничний випадок", sequence: [1], selected: false },
+    {
+      id: 4,
+      name: "Повторювані Значення",
+      sequence: [1, 3, 2, 3, 4, 1],
+      selected: false,
+    },
+    {
+      id: 5,
+      name: "Чергування",
+      sequence: [1, 5, 2, 6, 3, 7],
+      selected: false,
+    },
+    {
+      id: 6,
+      name: "Довга НЗП в Кінці",
+      sequence: [10, 20, 1, 2, 3, 4, 5, 6],
+      selected: false,
+    },
+    {
+      id: 7,
+      name: "Довга НЗП на Початку",
+      sequence: [1, 2, 3, 4, 5, 10, 2, 2, 2],
+      selected: false,
+    },
+    {
+      id: 8,
+      name: "Випадкова Суміш",
+      sequence: [3, 10, 2, 1, 20, 5, 1, 6],
+      selected: false,
+    },
+    {
+      id: 9,
+      name: "Від'ємні Числа",
+      sequence: [-5, -3, -1, 0, 2, 4],
+      selected: false,
+    },
+    {
+      id: 10,
+      name: "Всі Рівні Елементи",
+      sequence: [5, 5, 5, 5, 5, 5],
+      selected: false,
+    },
   ],
   addExample: (newExample) =>
     set((state) => ({

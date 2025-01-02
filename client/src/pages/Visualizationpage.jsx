@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Play, Pause, StepForward, StepBack, Save, X, Eye } from "lucide-react";
@@ -9,6 +8,7 @@ import { Dialog } from "@/components/ui/dialog";
 import SequenceDialog from "../components/SequenceDialog";
 import useExamples from "../store";
 import CodeDebugger from "../components/CodeDebugger";
+import RangeSelection from "../components/RangeSelection";
 
 const formatSequence = (seq) => {
   if (seq.length <= 4) return seq.join(", ");
@@ -80,8 +80,10 @@ const VisualizationPage = () => {
     currentJ: -1,
     lis: [],
   });
-  const [minRange, setMinRange] = useState(0);
-  const [maxRange, setMaxRange] = useState(100);
+  const [minRange, setMinRange] = useState("0");
+  const [maxRange, setMaxRange] = useState("100");
+  const [error, setError] = useState("");
+  const [sequenceLength, setSequenceLength] = useState("5");
   const {
     examples,
     addExample,
@@ -89,7 +91,6 @@ const VisualizationPage = () => {
     removeExample,
     editExample,
   } = useExamples();
-  const [showCodeDebugger, setShowCodeDebugger] = useState(false);
 
   const animationRef = useRef(null);
   const transitionDuration = 1000 / (animationSpeed * 2);
@@ -178,11 +179,20 @@ const VisualizationPage = () => {
     return () => clearInterval(animationRef.current);
   }, [isPlaying, isAutoMode, speed, algorithmState]);
 
-  const generateRandomSequence = (size) => {
-    const newSeq = Array.from({ length: size }, () =>
-      Math.floor(Math.random() * (maxRange - minRange + 1) + minRange),
+  const generateRandomSequence = () => {
+    if (!validateInputs()) {
+      return;
+    }
+
+    const min = Number(minRange);
+    const max = Number(maxRange);
+    const length = Number(sequenceLength);
+
+    const newSequence = Array.from({ length }, () =>
+      Math.floor(Math.random() * (max - min + 1) + min),
     );
-    setSequence(newSeq);
+
+    setSequence(newSequence);
     resetVisualization();
   };
 
@@ -216,6 +226,51 @@ const VisualizationPage = () => {
       ...savedExamples.filter((example) => example.id === id)[0],
       sequence: newSequence,
     });
+  };
+
+  const validateInputs = () => {
+    setError("");
+
+    if (!minRange.trim() || !maxRange.trim() || !sequenceLength.trim()) {
+      setError("Будь ласка, заповніть всі поля");
+      return false;
+    }
+
+    const min = Number(minRange);
+    const max = Number(maxRange);
+    const length = Number(sequenceLength);
+
+    if (isNaN(min) || isNaN(max) || isNaN(length)) {
+      setError("Будь ласка, введіть коректні числові значення");
+      return false;
+    }
+
+    if (length < 2 || length > 1000) {
+      setError("Довжина послідовності має бути від 2 до 1000");
+      return false;
+    }
+
+    if (min >= max) {
+      setError("Мінімальне значення має бути меншим за максимальне");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleMinRangeChange = (e) => {
+    const value = e.target.value;
+    setMinRange(value);
+  };
+
+  const handleMaxRangeChange = (e) => {
+    const value = e.target.value;
+    setMaxRange(value);
+  };
+
+  const handleSequenceLengthChange = (e) => {
+    const value = e.target.value;
+    setSequenceLength(value);
   };
 
   return (
@@ -325,59 +380,17 @@ const VisualizationPage = () => {
 
           <Card className="p-3 sm:p-4 bg-white">
             <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="text-sm font-medium">Діапазон генерації:</div>
-                <div className="flex gap-2">
-                  <Input
-                    type="number"
-                    placeholder="Мін"
-                    className="w-24"
-                    value={minRange}
-                    onChange={(e) => setMinRange(parseInt(e.target.value) || 0)}
-                  />
-                  <span className="self-center">-</span>
-                  <Input
-                    type="number"
-                    placeholder="Макс"
-                    className="w-24"
-                    value={maxRange}
-                    onChange={(e) =>
-                      setMaxRange(parseInt(e.target.value) || 100)
-                    }
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                <Input
-                  type="number"
-                  placeholder="Sequence size"
-                  className="w-full sm:w-32"
-                  onChange={(e) =>
-                    generateRandomSequence(parseInt(e.target.value))
-                  }
-                  min={2}
-                  max={20}
-                />
-                <div className="flex gap-2 w-full sm:w-auto">
-                  <Button
-                    variant="outline"
-                    className="flex-1 sm:flex-none"
-                    onClick={() => generateRandomSequence(sequence.length)}
-                  >
-                    Генерувати
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="flex-1 sm:flex-none"
-                    onClick={handleSaveExample}
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    Зберегти приклад
-                  </Button>
-                </div>
-              </div>
-
+              <RangeSelection
+                minRange={minRange}
+                maxRange={maxRange}
+                sequenceLength={sequenceLength}
+                handleMinRangeChange={handleMinRangeChange}
+                handleMaxRangeChange={handleMaxRangeChange}
+                handleSequenceLengthChange={handleSequenceLengthChange}
+                generateRandomSequence={generateRandomSequence}
+                handleSaveExample={handleSaveExample}
+                error={error}
+              />
               <div className="space-y-2">
                 <div className="text-sm font-medium">Збережені приклади:</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[200px] overflow-y-auto pr-1">

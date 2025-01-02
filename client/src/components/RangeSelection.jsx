@@ -1,0 +1,86 @@
+/* eslint-disable react/prop-types */
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Save } from "lucide-react";
+
+const RangeSelection = ({
+  minRange,
+  maxRange,
+  sequenceLength,
+  handleMinRangeChange,
+  handleMaxRangeChange,
+  handleSequenceLengthChange,
+  generateRandomSequence,
+  handleSaveExample,
+  error,
+}) => {
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4">
+        <div className="text-sm font-medium">Діапазон генерації:</div>
+        <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="w-24">
+              <label className="text-xs text-gray-500 mb-1 block">
+                Мінімум
+              </label>
+              <Input
+                type="number"
+                placeholder="Мін"
+                className="w-full"
+                value={minRange}
+                onChange={handleMinRangeChange}
+              />
+            </div>
+            <div className="w-24">
+              <label className="text-xs text-gray-500 mb-1 block">
+                Максимум
+              </label>
+              <Input
+                type="number"
+                placeholder="Макс"
+                className="w-full"
+                value={maxRange}
+                onChange={handleMaxRangeChange}
+              />
+            </div>
+            <div className="w-24">
+              <label className="text-xs text-gray-500 block">Довжина</label>
+              <Input
+                type="number"
+                placeholder="Розмір"
+                className="w-full"
+                value={sequenceLength}
+                onChange={handleSequenceLengthChange}
+              />
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              className="flex-shrink-0"
+              onClick={generateRandomSequence}
+            >
+              Генерувати
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-shrink-0"
+              onClick={handleSaveExample}
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Зберегти приклад
+            </Button>
+          </div>
+        </div>
+        {error && (
+          <div className="text-sm text-red-500 mt-2 p-2 bg-red-50 rounded-md">
+            {error}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default RangeSelection;

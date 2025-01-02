@@ -41,9 +41,10 @@ const SequenceDialog = ({ sequence, onClose, onLoad, onEdit }) => {
   };
 
   const validateInput = (value) => {
-    if (value === "") return true;
-    const parsedValue = parseInt(value);
-    return !isNaN(parsedValue) && /^\d+$/.test(value);
+    if (value === "") return false;
+    if (value === "-") return false;
+
+    return /^-?\d+$/.test(value);
   };
 
   const handleEdit = (index, value) => {
@@ -53,6 +54,7 @@ const SequenceDialog = ({ sequence, onClose, onLoad, onEdit }) => {
     });
 
     const newInvalidInputs = { ...invalidInputs };
+
     if (!validateInput(value)) {
       newInvalidInputs[index] = true;
     } else {
@@ -63,6 +65,7 @@ const SequenceDialog = ({ sequence, onClose, onLoad, onEdit }) => {
     if (value === "") {
       const newSequence = [...editedSequence];
       newSequence[index] = "";
+
       setEditedSequence(newSequence);
     } else if (validateInput(value)) {
       const parsedValue = parseInt(value);

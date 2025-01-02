@@ -53,8 +53,6 @@ const ExamplesPage = () => {
       return "Послідовність повинна містити лише дійсні числа";
     if (numbers.length < 1)
       return "Послідовність повинна містити принаймні одне число";
-    if (numbers.length > 20)
-      return "Послідовність не повинна перевищувати 20 чисел";
 
     return "";
   };
@@ -229,10 +227,12 @@ const ExamplesPage = () => {
                 {examples.map((example) => (
                   <TableRow key={example.id}>
                     <TableCell>
-                      <Checkbox
-                        checked={example.selected}
-                        onCheckedChange={() => toggleSelect(example.id)}
-                      />
+                      <div className="flex justify-center items-center">
+                        <Checkbox
+                          checked={example.selected}
+                          onCheckedChange={() => toggleSelect(example.id)}
+                        />
+                      </div>
                     </TableCell>
                     <TableCell>
                       {editingExample?.id === example.id ? (
