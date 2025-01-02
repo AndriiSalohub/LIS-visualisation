@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -31,8 +31,15 @@ import { Pencil, Trash2, Plus, Check, X, Upload, Download } from "lucide-react";
 import useExamples from "../store";
 
 const ExamplesPage = () => {
-  const { examples, addExample, removeExample, editExample, toggleSelect } =
-    useExamples();
+  const {
+    examples,
+    addExample,
+    removeExample,
+    editExample,
+    toggleSelect,
+    saveToLocalStorage,
+    loadFromLocalStorage,
+  } = useExamples();
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingExample, setEditingExample] = useState(null);
@@ -41,6 +48,14 @@ const ExamplesPage = () => {
   const [editErrors, setEditErrors] = useState({ name: "", sequence: "" });
 
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    loadFromLocalStorage();
+  }, []);
+
+  useEffect(() => {
+    saveToLocalStorage();
+  }, [examples]);
 
   const handleImport = () => {
     fileInputRef.current?.click();

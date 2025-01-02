@@ -78,6 +78,7 @@ const SequenceDialog = ({ sequence, onClose, onLoad, onEdit }) => {
   const handleNewElementChange = (value) => {
     setNewElement(value);
     const newInvalidInputs = { ...invalidInputs };
+
     if (!validateInput(value)) {
       newInvalidInputs.new = true;
     } else {
@@ -112,6 +113,7 @@ const SequenceDialog = ({ sequence, onClose, onLoad, onEdit }) => {
   const handleSave = () => {
     if (!hasInvalidInputs) {
       const validSequence = editedSequence.filter((val) => val !== "");
+
       onEdit(validSequence);
       setIsEditing(false);
       setTempInputs({});

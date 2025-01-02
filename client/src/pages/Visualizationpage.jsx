@@ -64,15 +64,6 @@ const getStepDescription = (state, sequence) => {
 
 const VisualizationPage = () => {
   const [sequence, setSequence] = useState([3, 10, 2, 1, 20]);
-  const [isAutoMode, setIsAutoMode] = useState(false);
-  const [speed, setSpeed] = useState(1);
-  const [animationSpeed, setAnimationSpeed] = useState(1);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [savedExamples, setSavedExamples] = useState([]);
-  const [stateHistory, setStateHistory] = useState([]);
-  const [currentHistoryIndex, setCurrentHistoryIndex] = useState(-1);
-  const [selectedExample, setSelectedExample] = useState(null);
-  const [showDetailedView, setShowDetailedView] = useState(true);
   const [algorithmState, setAlgorithmState] = useState({
     d: [],
     prev: [],
@@ -80,24 +71,57 @@ const VisualizationPage = () => {
     currentJ: -1,
     lis: [],
   });
+
+  const [isAutoMode, setIsAutoMode] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showDetailedView, setShowDetailedView] = useState(true);
+  const [selectedExample, setSelectedExample] = useState(null);
+  const [error, setError] = useState("");
+
+  const [speed, setSpeed] = useState(1);
+  const [animationSpeed, setAnimationSpeed] = useState(1);
+  const animationRef = useRef(null);
+  const transitionDuration = 1000 / (animationSpeed * 2);
+
+  const [stateHistory, setStateHistory] = useState([]);
+  const [currentHistoryIndex, setCurrentHistoryIndex] = useState(-1);
+
   const [minRange, setMinRange] = useState("0");
   const [maxRange, setMaxRange] = useState("100");
-  const [error, setError] = useState("");
   const [sequenceLength, setSequenceLength] = useState("5");
+
+  const [savedExamples, setSavedExamples] = useState([]);
   const {
     examples,
     addExample,
     getSelectedExamples,
     removeExample,
     editExample,
+    loadFromLocalStorage,
   } = useExamples();
 
-  const animationRef = useRef(null);
-  const transitionDuration = 1000 / (animationSpeed * 2);
+  useEffect(() => {
+    loadFromLocalStorage();
+  }, []);
 
-  const handleDeleteExample = (idToDelete) => {
-    removeExample(idToDelete);
-  };
+  useEffect(() => {
+    const selectedLibraryExamples = getSelectedExamples();
+
+    setSavedExamples(selectedLibraryExamples);
+  }, [examples]);
+
+  useEffect(() => {
+    if (isPlaying && isAutoMode) {
+      animationRef.current = setInterval(() => {
+        if (algorithmState.currentI !== -2) {
+          calculateStep();
+        } else {
+          setIsPlaying(false);
+        }
+      }, 1000 / speed);
+    }
+    return () => clearInterval(animationRef.current);
+  }, [isPlaying, isAutoMode, speed, algorithmState]);
 
   const getNextState = (currentState) => {
     const n = sequence.length;
@@ -138,99 +162,42 @@ const VisualizationPage = () => {
 
   const calculateStep = () => {
     const nextState = getNextState(algorithmState);
-
-    if (currentHistoryIndex < stateHistory.length - 1) {
-      setStateHistory((prev) => [
-        ...prev.slice(0, currentHistoryIndex + 1),
-        nextState,
-      ]);
-    } else {
-      setStateHistory((prev) => [...prev, nextState]);
-    }
-
+    setStateHistory((prev) => [
+      ...prev.slice(0, currentHistoryIndex + 1),
+      nextState,
+    ]);
     setCurrentHistoryIndex((prev) => prev + 1);
     setAlgorithmState(nextState);
   };
 
   const stepBack = () => {
     if (currentHistoryIndex > 0) {
-      const previousState = stateHistory[currentHistoryIndex - 1];
       setCurrentHistoryIndex((prev) => prev - 1);
-      setAlgorithmState(previousState);
+      setAlgorithmState(stateHistory[currentHistoryIndex - 1]);
     }
-  };
-
-  useEffect(() => {
-    const selectedLibraryExamples = getSelectedExamples();
-
-    setSavedExamples(selectedLibraryExamples);
-  }, [examples]);
-
-  useEffect(() => {
-    if (isPlaying && isAutoMode) {
-      animationRef.current = setInterval(() => {
-        if (algorithmState.currentI !== -2) {
-          calculateStep();
-        } else {
-          setIsPlaying(false);
-        }
-      }, 1000 / speed);
-    }
-    return () => clearInterval(animationRef.current);
-  }, [isPlaying, isAutoMode, speed, algorithmState]);
-
-  const generateRandomSequence = () => {
-    if (!validateInputs()) {
-      return;
-    }
-
-    const min = Number(minRange);
-    const max = Number(maxRange);
-    const length = Number(sequenceLength);
-
-    const newSequence = Array.from({ length }, () =>
-      Math.floor(Math.random() * (max - min + 1) + min),
-    );
-
-    setSequence(newSequence);
-    resetVisualization();
-  };
-
-  const resetVisualization = () => {
-    setIsPlaying(false);
-    setStateHistory([]);
-    setCurrentHistoryIndex(-1);
-    setAlgorithmState({
-      d: [],
-      prev: [],
-      currentI: -1,
-      currentJ: -1,
-      lis: [],
-    });
   };
 
   const handleSaveExample = () => {
     addExample({
-      name: `Sequence ${examples.length + 1}`,
+      name: `Послідовність ${examples.length + 1}`,
       sequence: sequence,
       selected: true,
     });
   };
 
   const handleEditExample = (id, newSequence) => {
-    console.log({
-      ...savedExamples.filter((example) => example.id === id)[0],
-      sequence: newSequence,
-    });
     editExample({
-      ...savedExamples.filter((example) => example.id === id)[0],
+      ...savedExamples.find((example) => example.id === id),
       sequence: newSequence,
     });
   };
 
+  const handleDeleteExample = (idToDelete) => {
+    removeExample(idToDelete);
+  };
+
   const validateInputs = () => {
     setError("");
-
     if (!minRange.trim() || !maxRange.trim() || !sequenceLength.trim()) {
       setError("Будь ласка, заповніть всі поля");
       return false;
@@ -256,6 +223,34 @@ const VisualizationPage = () => {
     }
 
     return true;
+  };
+
+  const generateRandomSequence = () => {
+    if (!validateInputs()) return;
+
+    const min = Number(minRange);
+    const max = Number(maxRange);
+    const length = Number(sequenceLength);
+
+    const newSequence = Array.from({ length }, () =>
+      Math.floor(Math.random() * (max - min + 1) + min),
+    );
+
+    setSequence(newSequence);
+    resetVisualization();
+  };
+
+  const resetVisualization = () => {
+    setIsPlaying(false);
+    setStateHistory([]);
+    setCurrentHistoryIndex(-1);
+    setAlgorithmState({
+      d: [],
+      prev: [],
+      currentI: -1,
+      currentJ: -1,
+      lis: [],
+    });
   };
 
   const handleMinRangeChange = (e) => {

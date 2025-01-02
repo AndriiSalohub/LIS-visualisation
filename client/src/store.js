@@ -59,61 +59,135 @@ const useExamples = create((set, get) => ({
     },
   ],
   addExample: (newExample) =>
-    set((state) => ({
-      examples: [
+    set((state) => {
+      const updatedExamples = [
         ...state.examples,
         {
           ...newExample,
           id: Math.max(...state.examples.map((ex) => ex.id), 0) + 1,
           selected: newExample.selected ? newExample.selected : false,
         },
-      ],
-    })),
+      ];
+      localStorage.setItem("lis-examples", JSON.stringify(updatedExamples));
+      localStorage.setItem(
+        "lis-selected",
+        JSON.stringify(
+          updatedExamples.filter((ex) => ex.selected).map((ex) => ex.id),
+        ),
+      );
+      return { examples: updatedExamples };
+    }),
   removeExample: (id) =>
-    set((state) => ({
-      examples: state.examples.filter((example) => example.id !== id),
-    })),
+    set((state) => {
+      const updatedExamples = state.examples.filter(
+        (example) => example.id !== id,
+      );
+      localStorage.setItem("lis-examples", JSON.stringify(updatedExamples));
+      localStorage.setItem(
+        "lis-selected",
+        JSON.stringify(
+          updatedExamples.filter((ex) => ex.selected).map((ex) => ex.id),
+        ),
+      );
+      return { examples: updatedExamples };
+    }),
   editExample: (updatedExample) =>
-    set((state) => ({
-      examples: state.examples.map((example) =>
+    set((state) => {
+      const updatedExamples = state.examples.map((example) =>
         example.id === updatedExample.id ? updatedExample : example,
-      ),
-    })),
+      );
+      localStorage.setItem("lis-examples", JSON.stringify(updatedExamples));
+      localStorage.setItem(
+        "lis-selected",
+        JSON.stringify(
+          updatedExamples.filter((ex) => ex.selected).map((ex) => ex.id),
+        ),
+      );
+      return { examples: updatedExamples };
+    }),
   toggleSelect: (id) =>
-    set((state) => ({
-      examples: state.examples.map((example) =>
+    set((state) => {
+      const updatedExamples = state.examples.map((example) =>
         example.id === id
           ? { ...example, selected: !example.selected }
           : example,
-      ),
-    })),
-  getSelectedExamples: () =>
-    get().examples.filter((example) => example.selected),
+      );
+      localStorage.setItem("lis-examples", JSON.stringify(updatedExamples));
+      localStorage.setItem(
+        "lis-selected",
+        JSON.stringify(
+          updatedExamples.filter((ex) => ex.selected).map((ex) => ex.id),
+        ),
+      );
+      return { examples: updatedExamples };
+    }),
+  getSelectedExamples: () => {
+    const savedSelected = localStorage.getItem("lis-selected");
+    if (savedSelected) {
+      const selectedIds = JSON.parse(savedSelected);
+      return get().examples.filter((example) =>
+        selectedIds.includes(example.id),
+      );
+    }
+    return get().examples.filter((example) => example.selected);
+  },
   clearSelection: () =>
-    set((state) => ({
-      examples: state.examples.map((example) => ({
+    set((state) => {
+      const updatedExamples = state.examples.map((example) => ({
         ...example,
         selected: false,
-      })),
-    })),
+      }));
+      localStorage.setItem("lis-examples", JSON.stringify(updatedExamples));
+      localStorage.setItem("lis-selected", JSON.stringify([]));
+      return { examples: updatedExamples };
+    }),
   bulkRemove: (ids) =>
-    set((state) => ({
-      examples: state.examples.filter((example) => !ids.includes(example.id)),
-    })),
+    set((state) => {
+      const updatedExamples = state.examples.filter(
+        (example) => !ids.includes(example.id),
+      );
+      localStorage.setItem("lis-examples", JSON.stringify(updatedExamples));
+      localStorage.setItem(
+        "lis-selected",
+        JSON.stringify(
+          updatedExamples.filter((ex) => ex.selected).map((ex) => ex.id),
+        ),
+      );
+      return { examples: updatedExamples };
+    }),
   saveToLocalStorage: () => {
     try {
-      localStorage.setItem("lis-examples", JSON.stringify(get().examples));
+      const state = get();
+      localStorage.setItem("lis-examples", JSON.stringify(state.examples));
+      localStorage.setItem(
+        "lis-selected",
+        JSON.stringify(
+          state.examples.filter((ex) => ex.selected).map((ex) => ex.id),
+        ),
+      );
     } catch (error) {
-      console.error("Failed to save examples to localStorage:", error);
+      console.error("Помилка при збереженні до  localStorage:", error);
     }
   },
   loadFromLocalStorage: () =>
     set(() => {
       try {
-        const saved = localStorage.getItem("lis-examples");
-        return saved ? { examples: JSON.parse(saved) } : {};
+        const savedExamples = localStorage.getItem("lis-examples");
+        const savedSelected = localStorage.getItem("lis-selected");
+
+        if (savedExamples) {
+          const examples = JSON.parse(savedExamples);
+          if (savedSelected) {
+            const selectedIds = JSON.parse(savedSelected);
+            examples.forEach((example) => {
+              example.selected = selectedIds.includes(example.id);
+            });
+          }
+          return { examples };
+        }
+        return {};
       } catch (error) {
-        console.error("Failed to load examples from localStorage:", error);
+        console.error("Помилка вигрузки прикладів з localStorage:", error);
         return {};
       }
     }),

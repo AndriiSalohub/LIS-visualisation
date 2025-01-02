@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Button } from "@/components/ui/button";
+import { Eye, X } from "lucide-react";
 
 const SavedExamples = ({
   savedExamples,
