@@ -140,17 +140,24 @@ const ExamplesPage = () => {
     return "";
   };
 
-  const validateName = (name) => {
+  const validateName = (name, currentId = null) => {
     if (!name.trim()) return "Назва обов'язковa";
+
     if (name.length < 3) return "Навза повиннa містити принаймні 3 символи";
+
     if (name.length > 50) return "Назва не повинна перевищувати 50 символів";
-    if (examples.some((ex) => ex.name === name.trim()))
-      return "Ім'я повинно бути унікальним";
+
+    const nameExists = examples.some(
+      (ex) => ex.name === name.trim() && ex.id !== currentId,
+    );
+
+    if (nameExists) return "Ім'я повинно бути унікальним";
+
     return "";
   };
 
   const validateForm = (data, isEditing = false) => {
-    const nameError = validateName(data.name);
+    const nameError = validateName(data.name, data.id);
     const sequenceError = validateSequence(data.sequence);
 
     if (isEditing) {

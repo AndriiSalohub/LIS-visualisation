@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { Play, Pause, StepForward, StepBack } from "lucide-react";
+import { Play, Pause, StepForward, StepBack, RotateCcw } from "lucide-react";
 
 const ControlPanel = ({
   isAutoMode,
@@ -20,6 +20,7 @@ const ControlPanel = ({
   calculateStep,
   algorithmState,
   currentHistoryIndex,
+  resetVisualization,
 }) => {
   return (
     <Card className="p-3 sm:p-4 bg-white">
@@ -57,6 +58,9 @@ const ControlPanel = ({
               disabled={isAutoMode || algorithmState.currentI === -2}
             >
               <StepForward className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="icon" onClick={resetVisualization}>
+              <RotateCcw className="h-4 w-4" />
             </Button>
           </div>
         </div>

@@ -1,4 +1,3 @@
-// TODO: додати кнопку ресету стану послідовності
 import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
@@ -17,6 +16,16 @@ const formatSequence = (seq) => {
 };
 
 const getStepDescription = (state, sequence) => {
+  if (
+    !state.d.length &&
+    !state.prev.length &&
+    state.currentI === -1 &&
+    state.currentJ === -1 &&
+    !state.lis.length
+  ) {
+    return "Очікування початку візуалізації. Натисніть 'Крок вперед' або 'Відтворити' для початку.";
+  }
+
   const { currentI, currentJ, d, lis } = state;
 
   if (currentI === -1) {
@@ -340,6 +349,7 @@ const VisualizationPage = () => {
             calculateStep={calculateStep}
             algorithmState={algorithmState}
             currentHistoryIndex={currentHistoryIndex}
+            resetVisualization={resetVisualization}
           />
 
           <Card className="p-3 sm:p-4 bg-white">
