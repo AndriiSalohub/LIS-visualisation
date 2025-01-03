@@ -108,6 +108,7 @@ const VisualizationPage = () => {
     removeExample,
     editExample,
     loadFromLocalStorage,
+    toggleSelect,
   } = useExamples();
 
   const LOCAL_STORAGE_STATE_KEY = "lis-visualization-state";
@@ -372,6 +373,7 @@ const VisualizationPage = () => {
                 setSelectedExample={setSelectedExample}
                 handleDeleteExample={handleDeleteExample}
                 formatSequence={formatSequence}
+                toggleSelect={toggleSelect}
               />
             </div>
           </Card>

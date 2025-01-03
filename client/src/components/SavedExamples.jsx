@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Button } from "@/components/ui/button";
-import { Eye, X } from "lucide-react";
+import { Eye, X, Trash2 } from "lucide-react";
 
 const SavedExamples = ({
   savedExamples,
@@ -9,6 +9,7 @@ const SavedExamples = ({
   setSelectedExample,
   handleDeleteExample,
   formatSequence,
+  toggleSelect,
 }) => {
   return (
     <div className="space-y-2">
@@ -35,7 +36,7 @@ const SavedExamples = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="mr-1"
+                className="h-6 w-6 p-1"
                 onClick={() => setSelectedExample(example.id)}
               >
                 <Eye className="h-4 w-4 text-gray-500 hover:text-gray-700" />
@@ -43,7 +44,16 @@ const SavedExamples = ({
               <Button
                 variant="ghost"
                 size="icon"
+                className="h-6 w-6 p-1"
                 onClick={() => handleDeleteExample(example.id)}
+              >
+                <Trash2 className="h-4 w-4 text-red-500 hover:text-red-700" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 p-1"
+                onClick={() => toggleSelect(example.id)}
               >
                 <X className="h-4 w-4 text-gray-500 hover:text-gray-700" />
               </Button>
