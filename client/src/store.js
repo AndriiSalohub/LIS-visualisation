@@ -166,7 +166,7 @@ const useExamples = create((set, get) => ({
         ),
       );
     } catch (error) {
-      console.error("Помилка при збереженні до  localStorage:", error);
+      console.error("Помилка при збереженні до localStorage:", error);
     }
   },
   loadFromLocalStorage: () =>

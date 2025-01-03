@@ -1,3 +1,4 @@
+// TODO: додати кнопку ресету стану послідовності
 import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
@@ -100,8 +101,23 @@ const VisualizationPage = () => {
     loadFromLocalStorage,
   } = useExamples();
 
+  const LOCAL_STORAGE_STATE_KEY = "lis-visualization-state";
+
   useEffect(() => {
     loadFromLocalStorage();
+  }, []);
+
+  useEffect(() => {
+    const savedState = localStorage.getItem(LOCAL_STORAGE_STATE_KEY);
+
+    if (savedState) {
+      const { sequence, algorithmState, stateHistory, currentHistoryIndex } =
+        JSON.parse(savedState);
+      setSequence(sequence);
+      setAlgorithmState(algorithmState);
+      setStateHistory(stateHistory);
+      setCurrentHistoryIndex(currentHistoryIndex);
+    }
   }, []);
 
   useEffect(() => {
@@ -122,6 +138,18 @@ const VisualizationPage = () => {
     }
     return () => clearInterval(animationRef.current);
   }, [isPlaying, isAutoMode, speed, algorithmState]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      LOCAL_STORAGE_STATE_KEY,
+      JSON.stringify({
+        sequence,
+        algorithmState,
+        stateHistory,
+        currentHistoryIndex,
+      }),
+    );
+  }, [sequence, algorithmState, stateHistory, currentHistoryIndex]);
 
   const getNextState = (currentState) => {
     const n = sequence.length;
