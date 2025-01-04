@@ -131,30 +131,6 @@ const useExamples = create((set, get) => ({
     }
     return get().examples.filter((example) => example.selected);
   },
-  clearSelection: () =>
-    set((state) => {
-      const updatedExamples = state.examples.map((example) => ({
-        ...example,
-        selected: false,
-      }));
-      localStorage.setItem("lis-examples", JSON.stringify(updatedExamples));
-      localStorage.setItem("lis-selected", JSON.stringify([]));
-      return { examples: updatedExamples };
-    }),
-  bulkRemove: (ids) =>
-    set((state) => {
-      const updatedExamples = state.examples.filter(
-        (example) => !ids.includes(example.id),
-      );
-      localStorage.setItem("lis-examples", JSON.stringify(updatedExamples));
-      localStorage.setItem(
-        "lis-selected",
-        JSON.stringify(
-          updatedExamples.filter((ex) => ex.selected).map((ex) => ex.id),
-        ),
-      );
-      return { examples: updatedExamples };
-    }),
   saveToLocalStorage: () => {
     try {
       const state = get();

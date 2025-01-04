@@ -21,10 +21,26 @@ const ControlPanel = ({
   algorithmState,
   currentHistoryIndex,
   resetVisualization,
+  totalSteps,
 }) => {
+  const currentStep = Math.min(currentHistoryIndex + 1, totalSteps);
+  const progress =
+    totalSteps > 0 ? Math.min((currentStep / totalSteps) * 100, 100) : 0;
+
   return (
     <Card className="p-3 sm:p-4 bg-white">
       <div className="space-y-4">
+        <div className="relative h-6 bg-gray-200 rounded-sm overflow-hidden">
+          <div
+            className="absolute h-full bg-green-500 transition-all duration-200"
+            style={{ width: `${progress}%` }}
+          />
+          <div className="absolute inset-0 flex items-center justify-center text-sm">
+            <span className={currentStep === totalSteps ? "text-white" : ""}>
+              {currentStep} / {totalSteps}
+            </span>
+          </div>
+        </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-2">
           <div className="flex items-center space-x-2">
             <Switch checked={isAutoMode} onCheckedChange={setIsAutoMode} />

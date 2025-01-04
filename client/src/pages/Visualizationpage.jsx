@@ -81,6 +81,7 @@ const VisualizationPage = () => {
     currentJ: -1,
     lis: [],
   });
+  const [totalSteps, setTotalSteps] = useState(0);
 
   const [isAutoMode, setIsAutoMode] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -160,6 +161,22 @@ const VisualizationPage = () => {
       }),
     );
   }, [sequence, algorithmState, stateHistory, currentHistoryIndex]);
+
+  useEffect(() => {
+    if (algorithmState.d.length > 0) {
+      setTotalSteps(calculateInitialTotalSteps(algorithmState.d.length));
+    }
+  }, [algorithmState.d.length]);
+
+  const calculateInitialTotalSteps = (arrayLength) => {
+    if (arrayLength === 0) return 0;
+
+    const dpSteps = (arrayLength * (arrayLength - 1)) / 2;
+
+    const lisConstructionSteps = arrayLength;
+
+    return dpSteps + lisConstructionSteps;
+  };
 
   const getNextState = (currentState) => {
     const n = sequence.length;
@@ -351,6 +368,7 @@ const VisualizationPage = () => {
             algorithmState={algorithmState}
             currentHistoryIndex={currentHistoryIndex}
             resetVisualization={resetVisualization}
+            totalSteps={totalSteps}
           />
 
           <Card className="p-3 sm:p-4 bg-white">
