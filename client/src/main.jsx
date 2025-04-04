@@ -2,10 +2,10 @@ import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "../src/assets/styles/index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import HomePage from "./pages/HomePage.jsx";
-import VisualizationPage from "./pages/VisualizationPage.jsx";
-import ExamplesPage from "./pages/ExamplesPage.jsx";
-import DocumentationPage from "./pages/DocumentationPage.jsx";
+import HomePage from "@/pages/HomePage.jsx";
+import VisualizationPage from "@/pages/VisualizationPage.jsx";
+import ExamplesPage from "@/pages/ExamplesPage.jsx";
+import DocumentationPage from "@/pages/DocumentationPage.jsx";
 
 const router = createBrowserRouter([
   {
