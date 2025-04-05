@@ -1,63 +1,74 @@
-# LIS-visualisation
+# LIS Visualisation
 
-## Огляд Проекту
+## Project Overview
 
-Візуалізація LIS - це веб-додаток, розроблений для допомоги користувачам у розумінні та взаємодії з алгоритмом знаходження найдовшої зростаючої підпослідовності (Longest Increasing Subsequence, LIS) через візуальне представлення. Платформа пропонує як автоматичний, так і ручний режими візуалізації, дозволяючи користувачам контролювати швидкість виконання та створювати власні приклади.
+LIS Visualisation is a web application designed to help users understand and interact with the Longest Increasing Subsequence (LIS) algorithm through an intuitive visual representation. The platform offers both automatic and manual visualisation modes, enabling users to control the execution speed and create custom examples to explore the algorithm in depth.
 
-## Функціональність
+## Tech Stack
 
-### Навігація
+- **Frontend**: Built with React.
+- **Routing**: Managed with React Router DOM.
+- **State Management**: Zustand for lightweight and efficient state handling.
+- **UI Components**: Shadcn UI for accessible and customizable components.
+- **Styling**: Tailwind CSS for rapid and consistent styling.
+- **Animations**: Framer Motion for smooth and engaging transitions.
+- **Animations**: Framer Motion for smooth and engaging transitions.
 
-- Мінімалістичне навігаційне меню у верхній частині всіх сторінок для зручної навігації між розділами
+## Features
 
-### Головна сторінка
+### Navigation
 
-- Заголовок сайту
-- Короткий опис призначення платформи
-- Загальна інформація про можливості сайту
+- A minimalist navigation menu at the top of all pages for seamless transitions between sections.
 
-### Візуалізація
+### Home Page
 
-#### Інтерактивний компонент
+- Site title and branding.
+- A brief description of the platform's purpose.
+- General information about the site's capabilities.
 
-- Область візуалізації алгоритму
-- Панель керування:
-  - Перемикання між автоматичним та ручним режимами візуалізації
-  - Налаштування швидкості автоматичного виконання
-  - Кнопки керування (пауза, крок вперед, крок назад)
-  - Налаштування швидкості анімації
+### Visualisation
 
-#### Панель налаштування прикладів
+#### Interactive Component
 
-- Зміна розміру вхідних даних
-- Генерація випадкових прикладів
-- Редагування власних прикладів
-- Перегляд збережених прикладів
-- Збереження створених прикладів
+- **Visualisation Area**: Displays the step-by-step execution of the LIS algorithm.
+- **Control Panel**:
+  - Toggle between automatic and manual visualisation modes.
+  - Adjust the speed of automatic execution.
+  - Control buttons: Pause, Step Forward, Step Backward.
+  - Animation speed settings for a tailored experience.
 
-### Розділ Прикладів
+#### Example Configuration Panel
 
-- Бібліотека готових прикладів
-- Можливість створення нових прикладів
-- Редагування існуючих прикладів
-- Вибір прикладів для відображення на сторінці візуалізації
-- Управління колекцією прикладів
-- Можливість завантаження прикладів з JSON файлів
-- Можливість вивантаження прикладів у форматі JSON
+- Modify the size of input data.
+- Generate random examples with a single click.
+- Edit custom examples manually.
+- View a list of saved examples.
+- Save newly created examples for future use.
 
-### Документація
+### Examples Section
 
-- Детальна документація інтерфейсу
-- Пояснення роботи алгоритму
-- Інструкції з використання різних функцій сайту
+- A library of pre-built examples for quick exploration.
+- Create new examples from scratch.
+- Edit existing examples to suit your needs.
+- Select examples to display in the visualisation section.
+- Manage your collection of examples with ease.
+- Import examples from JSON files.
+- Export examples to JSON format for sharing or backup.
 
-## Ресурси Проекту
+### Documentation
 
-### Презентації
+- Detailed interface documentation.
+- Explanation of how the LIS algorithm works.
+- Step-by-step instructions for using the site's features.
 
-- [Презентація Проекту](https://docs.google.com/presentation/d/1o9dKCIyOCjAtH8PHfZSn5N_Fp8Fe5Smt/edit?usp=drive_link&ouid=110459315094029520084&rtpof=true&sd=true)
+## Deployment
 
-### Відеоматеріали
+Check out the live demo of the LIS Visualisation:
 
-- [Відео Презентації](https://drive.google.com/file/d/1B6tS7UScE86HP-7Pb0gMhViuryxT1z_D/view?usp=sharing)
-- [Демонстрація Проєкту](https://drive.google.com/file/d/1CxVrJcTlpra5rfYEvisKSG--aUqKZ7D1/view?usp=sharing)
+- Vercel: https://lis-visualisation.vercel.app/
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
