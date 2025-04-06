@@ -1,9 +1,21 @@
-/* eslint-disable react/prop-types */
+import { FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Save } from "lucide-react";
 
-const RangeSelection = ({
+interface RangeSelectionProps {
+  minRange: string;
+  maxRange: string;
+  sequenceLength: string;
+  handleMinRangeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleMaxRangeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSequenceLengthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  generateRandomSequence: () => void;
+  handleSaveExample: () => void;
+  error: string;
+}
+
+const RangeSelection: FC<RangeSelectionProps> = ({
   minRange,
   maxRange,
   sequenceLength,

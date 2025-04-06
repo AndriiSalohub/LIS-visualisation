@@ -1,8 +1,19 @@
-/* eslint-disable react/prop-types */
+import { FC } from "react";
 import { Button } from "@/components/ui/button";
+import { Example } from "@/types/shared";
 import { Eye, X, Trash2 } from "lucide-react";
 
-const SavedExamples = ({
+interface SavedExamplesProps {
+  savedExamples: Example[];
+  setSequence: React.Dispatch<React.SetStateAction<number[]>>;
+  resetVisualization: () => void;
+  setSelectedExample: React.Dispatch<React.SetStateAction<number | null>>;
+  handleDeleteExample: (id: number) => void;
+  formatSequence: (seq: number[]) => string;
+  toggleSelect: (id: number) => void;
+}
+
+const SavedExamples: FC<SavedExamplesProps> = ({
   savedExamples,
   setSequence,
   resetVisualization,

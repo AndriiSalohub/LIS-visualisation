@@ -1,7 +1,18 @@
-/* eslint-disable react/prop-types */
 import { Card } from "@/components/ui/card";
+import { AlgorithmState } from "@/types/shared";
+import { FC } from "react";
 
-const SequenceDisplay = ({ sequence, algorithmState, transitionDuration }) => {
+interface SequenceDisplayProps {
+  sequence: number[];
+  algorithmState: AlgorithmState;
+  transitionDuration: number;
+}
+
+const SequenceDisplay: FC<SequenceDisplayProps> = ({
+  sequence,
+  algorithmState,
+  transitionDuration,
+}) => {
   return (
     <Card className="p-3 sm:p-6 bg-gray-50">
       <div className="grid grid-cols-1 gap-4">

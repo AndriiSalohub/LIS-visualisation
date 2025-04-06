@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import {
   DialogContent,
   DialogHeader,
@@ -6,16 +5,18 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { FC, useState } from "react";
 import { Pencil, Check, X, AlertCircle, Plus, Trash2 } from "lucide-react";
 
-const formatFullSequence = (seq) => {
-  if (seq.length <= 10) {
+const formatFullSequence = (seq: (number | "")[]) => {
+  const validNumbers = seq.filter((num): num is number => num !== "");
+
+  if (validNumbers.length <= 10) {
     return seq.join(", ");
   }
 
-  return seq
-    .reduce((rows, num, index) => {
+  return validNumbers
+    .reduce<number[][]>((rows, num, index) => {
       const rowIndex = Math.floor(index / 10);
       if (!rows[rowIndex]) {
         rows[rowIndex] = [];
@@ -27,12 +28,36 @@ const formatFullSequence = (seq) => {
     .join(",\n");
 };
 
-const SequenceDialog = ({ sequence, onClose, onLoad, onEdit }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedSequence, setEditedSequence] = useState([...sequence]);
-  const [newElement, setNewElement] = useState("");
-  const [tempInputs, setTempInputs] = useState({});
-  const [invalidInputs, setInvalidInputs] = useState({});
+interface SequenceDialogProps {
+  sequence: number[];
+  onClose: () => void;
+  onLoad: () => void;
+  onEdit: (newSequence: number[]) => void;
+}
+
+type TempInputsState = {
+  [key: string | number]: string;
+};
+
+type InvalidInputsState = {
+  [key: string | number]: boolean;
+};
+
+type SequenceItem = number | "";
+
+const SequenceDialog: FC<SequenceDialogProps> = ({
+  sequence,
+  onClose,
+  onLoad,
+  onEdit,
+}) => {
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editedSequence, setEditedSequence] = useState<SequenceItem[]>([
+    ...sequence,
+  ]);
+  const [newElement, setNewElement] = useState<string>("");
+  const [tempInputs, setTempInputs] = useState<TempInputsState>({});
+  const [invalidInputs, setInvalidInputs] = useState<InvalidInputsState>({});
 
   const stats = {
     length: sequence.length,
@@ -40,14 +65,14 @@ const SequenceDialog = ({ sequence, onClose, onLoad, onEdit }) => {
     max: Math.max(...sequence),
   };
 
-  const validateInput = (value) => {
+  const validateInput = (value: string) => {
     if (value === "") return false;
     if (value === "-") return false;
 
     return /^-?\d+$/.test(value);
   };
 
-  const handleEdit = (index, value) => {
+  const handleEdit = (index: number, value: string) => {
     setTempInputs({
       ...tempInputs,
       [index]: value,
@@ -75,7 +100,7 @@ const SequenceDialog = ({ sequence, onClose, onLoad, onEdit }) => {
     }
   };
 
-  const handleNewElementChange = (value) => {
+  const handleNewElementChange = (value: string) => {
     setNewElement(value);
     const newInvalidInputs = { ...invalidInputs };
 
@@ -98,7 +123,7 @@ const SequenceDialog = ({ sequence, onClose, onLoad, onEdit }) => {
     }
   };
 
-  const handleRemoveElement = (index) => {
+  const handleRemoveElement = (index: number) => {
     setEditedSequence(editedSequence.filter((_, idx) => idx !== index));
     const newTempInputs = { ...tempInputs };
     delete newTempInputs[index];

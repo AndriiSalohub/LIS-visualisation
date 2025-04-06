@@ -1,11 +1,16 @@
-/* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, FC } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { AlgorithmState } from "@/types/shared";
 
-const CodeDebugger = ({ algorithmState, sequence }) => {
+interface CodeDebuggerProps {
+  algorithmState: AlgorithmState;
+  sequence: number[];
+}
+
+const CodeDebugger: FC<CodeDebuggerProps> = ({ algorithmState, sequence }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const getActiveLines = () => {

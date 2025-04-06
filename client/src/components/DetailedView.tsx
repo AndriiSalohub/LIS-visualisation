@@ -1,7 +1,16 @@
-/* eslint-disable react/prop-types */
+import { FC } from "react";
 import { Card } from "@/components/ui/card";
+import { AlgorithmState } from "@/types/shared";
 
-const DetailedView = ({ algorithmState, transitionDuration }) => {
+interface DetailedViewProps {
+  algorithmState: AlgorithmState;
+  transitionDuration: number;
+}
+
+const DetailedView: FC<DetailedViewProps> = ({
+  algorithmState,
+  transitionDuration,
+}) => {
   return (
     <Card className="p-3 sm:p-4 bg-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

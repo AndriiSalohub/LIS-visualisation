@@ -9,6 +9,7 @@ import SavedExamples from "../components/SavedExamples";
 import SequenceDisplay from "../components/SequenceDisplay";
 import DetailedView from "../components/DetailedView";
 import useExamples from "../store";
+import { AlgorithmState, Example } from "../types/shared";
 
 const formatSequence = (seq: number[]) => {
   if (seq.length <= 4) return seq.join(", ");
@@ -71,21 +72,6 @@ const getStepDescription = (state: AlgorithmState, sequence: number[]) => {
 
   return "Відновлення найдовшої зростаючої підпослідовності...";
 };
-
-interface AlgorithmState {
-  d: number[];
-  prev: number[];
-  currentI: number;
-  currentJ: number;
-  lis: number[];
-}
-
-interface Example {
-  id: number;
-  name: string;
-  sequence: number[];
-  selected: boolean;
-}
 
 const VisualizationPage = () => {
   const [sequence, setSequence] = useState<number[]>([3, 10, 2, 1, 20]);
@@ -253,6 +239,7 @@ const VisualizationPage = () => {
 
   const handleSaveExample = () => {
     addExample({
+      id: savedExamples.length + 1,
       name: `Послідовність ${examples.length + 1}`,
       sequence: sequence,
       selected: true,
@@ -260,8 +247,9 @@ const VisualizationPage = () => {
   };
 
   const handleEditExample = (id: number, newSequence: number[]) => {
+    const exampleToEdit = savedExamples.find((example) => example.id === id)!;
     editExample({
-      ...savedExamples.find((example) => example.id === id),
+      ...exampleToEdit,
       sequence: newSequence,
     });
   };

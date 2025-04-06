@@ -1,11 +1,31 @@
-/* eslint-disable react/prop-types */
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import { AlgorithmState } from "@/types/shared";
 import { Play, Pause, StepForward, StepBack, RotateCcw } from "lucide-react";
+import { FC } from "react";
 
-const ControlPanel = ({
+interface ControlPanelProps {
+  isAutoMode: boolean;
+  setIsAutoMode: React.Dispatch<React.SetStateAction<boolean>>;
+  isPlaying: boolean;
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  showDetailedView: boolean;
+  setShowDetailedView: React.Dispatch<React.SetStateAction<boolean>>;
+  animationSpeed: number;
+  setAnimationSpeed: React.Dispatch<React.SetStateAction<number>>;
+  speed: number;
+  setSpeed: React.Dispatch<React.SetStateAction<number>>;
+  stepBack: () => void;
+  calculateStep: () => void;
+  algorithmState: AlgorithmState;
+  currentHistoryIndex: number;
+  resetVisualization: () => void;
+  totalSteps: number;
+}
+
+const ControlPanel: FC<ControlPanelProps> = ({
   isAutoMode,
   setIsAutoMode,
   isPlaying,
@@ -23,8 +43,8 @@ const ControlPanel = ({
   resetVisualization,
   totalSteps,
 }) => {
-  const currentStep = Math.min(currentHistoryIndex + 1, totalSteps);
-  const progress =
+  const currentStep: number = Math.min(currentHistoryIndex + 1, totalSteps);
+  const progress: number =
     totalSteps > 0 ? Math.min((currentStep / totalSteps) * 100, 100) : 0;
 
   return (

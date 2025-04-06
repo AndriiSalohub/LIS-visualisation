@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { Example } from "./types/shared";
 
 interface ExamplesState {
   examples: Example[];
@@ -6,16 +7,9 @@ interface ExamplesState {
   removeExample: (id: number) => void;
   editExample: (updatedExample: Example) => void;
   toggleSelect: (id: number) => void;
-  getSelectedExamples: () => void;
+  getSelectedExamples: () => Example[];
   saveToLocalStorage: () => void;
   loadFromLocalStorage: () => void;
-}
-
-interface Example {
-  id: number;
-  name: string;
-  sequence: number[];
-  selected: boolean;
 }
 
 const useExamples = create<ExamplesState>()((set, get) => ({
