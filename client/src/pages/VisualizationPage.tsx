@@ -10,12 +10,12 @@ import SequenceDisplay from "../components/SequenceDisplay";
 import DetailedView from "../components/DetailedView";
 import useExamples from "../store";
 
-const formatSequence = (seq) => {
+const formatSequence = (seq: number[]) => {
   if (seq.length <= 4) return seq.join(", ");
   return `${seq.slice(0, 3).join(", ")}...${seq[seq.length - 1]}`;
 };
 
-const getStepDescription = (state, sequence) => {
+const getStepDescription = (state: AlgorithmState, sequence: number[]) => {
   if (
     !state.d.length &&
     !state.prev.length &&
@@ -72,36 +72,51 @@ const getStepDescription = (state, sequence) => {
   return "Відновлення найдовшої зростаючої підпослідовності...";
 };
 
+interface AlgorithmState {
+  d: number[];
+  prev: number[];
+  currentI: number;
+  currentJ: number;
+  lis: number[];
+}
+
+interface Example {
+  id: number;
+  name: string;
+  sequence: number[];
+  selected: boolean;
+}
+
 const VisualizationPage = () => {
-  const [sequence, setSequence] = useState([3, 10, 2, 1, 20]);
-  const [algorithmState, setAlgorithmState] = useState({
+  const [sequence, setSequence] = useState<number[]>([3, 10, 2, 1, 20]);
+  const [algorithmState, setAlgorithmState] = useState<AlgorithmState>({
     d: [],
     prev: [],
     currentI: -1,
     currentJ: -1,
     lis: [],
   });
-  const [totalSteps, setTotalSteps] = useState(0);
+  const [totalSteps, setTotalSteps] = useState<number>(0);
 
-  const [isAutoMode, setIsAutoMode] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [showDetailedView, setShowDetailedView] = useState(true);
-  const [selectedExample, setSelectedExample] = useState(null);
-  const [error, setError] = useState("");
+  const [isAutoMode, setIsAutoMode] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [showDetailedView, setShowDetailedView] = useState<boolean>(true);
+  const [selectedExample, setSelectedExample] = useState<number | null>(null);
+  const [error, setError] = useState<string>("");
 
-  const [speed, setSpeed] = useState(1);
-  const [animationSpeed, setAnimationSpeed] = useState(1);
-  const animationRef = useRef(null);
-  const transitionDuration = 1000 / (animationSpeed * 2);
+  const [speed, setSpeed] = useState<number>(1);
+  const [animationSpeed, setAnimationSpeed] = useState<number>(1);
+  const animationRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const transitionDuration: number = 1000 / (animationSpeed * 2);
 
-  const [stateHistory, setStateHistory] = useState([]);
-  const [currentHistoryIndex, setCurrentHistoryIndex] = useState(-1);
+  const [stateHistory, setStateHistory] = useState<AlgorithmState[]>([]);
+  const [currentHistoryIndex, setCurrentHistoryIndex] = useState<number>(-1);
 
-  const [minRange, setMinRange] = useState("0");
-  const [maxRange, setMaxRange] = useState("100");
-  const [sequenceLength, setSequenceLength] = useState("5");
+  const [minRange, setMinRange] = useState<string>("0");
+  const [maxRange, setMaxRange] = useState<string>("100");
+  const [sequenceLength, setSequenceLength] = useState<string>("5");
 
-  const [savedExamples, setSavedExamples] = useState([]);
+  const [savedExamples, setSavedExamples] = useState<Example[]>([]);
   const {
     examples,
     addExample,
@@ -112,7 +127,7 @@ const VisualizationPage = () => {
     toggleSelect,
   } = useExamples();
 
-  const LOCAL_STORAGE_STATE_KEY = "lis-visualization-state";
+  const LOCAL_STORAGE_STATE_KEY: string = "lis-visualization-state";
 
   useEffect(() => {
     loadFromLocalStorage();
@@ -147,7 +162,11 @@ const VisualizationPage = () => {
         }
       }, 1000 / speed);
     }
-    return () => clearInterval(animationRef.current);
+    return () => {
+      if (animationRef.current) {
+        clearInterval(animationRef.current);
+      }
+    };
   }, [isPlaying, isAutoMode, speed, algorithmState]);
 
   useEffect(() => {
@@ -168,7 +187,7 @@ const VisualizationPage = () => {
     }
   }, [algorithmState.d.length]);
 
-  const calculateInitialTotalSteps = (arrayLength) => {
+  const calculateInitialTotalSteps = (arrayLength: number) => {
     if (arrayLength === 0) return 0;
 
     const dpSteps = (arrayLength * (arrayLength - 1)) / 2;
@@ -178,7 +197,7 @@ const VisualizationPage = () => {
     return dpSteps + lisConstructionSteps;
   };
 
-  const getNextState = (currentState) => {
+  const getNextState = (currentState: AlgorithmState) => {
     const n = sequence.length;
     let { d, prev, currentI, currentJ, lis } = { ...currentState };
 
@@ -240,14 +259,14 @@ const VisualizationPage = () => {
     });
   };
 
-  const handleEditExample = (id, newSequence) => {
+  const handleEditExample = (id: number, newSequence: number[]) => {
     editExample({
       ...savedExamples.find((example) => example.id === id),
       sequence: newSequence,
     });
   };
 
-  const handleDeleteExample = (idToDelete) => {
+  const handleDeleteExample = (idToDelete: number) => {
     removeExample(idToDelete);
   };
 
@@ -308,17 +327,19 @@ const VisualizationPage = () => {
     });
   };
 
-  const handleMinRangeChange = (e) => {
+  const handleMinRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setMinRange(value);
   };
 
-  const handleMaxRangeChange = (e) => {
+  const handleMaxRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setMaxRange(value);
   };
 
-  const handleSequenceLengthChange = (e) => {
+  const handleSequenceLengthChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const value = e.target.value;
     setSequenceLength(value);
   };
@@ -343,7 +364,7 @@ const VisualizationPage = () => {
               resetVisualization();
               setSelectedExample(null);
             }}
-            onEdit={(newSequence) =>
+            onEdit={(newSequence: number[]) =>
               handleEditExample(selectedExample, newSequence)
             }
           />

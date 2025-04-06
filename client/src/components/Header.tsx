@@ -1,3 +1,4 @@
+import { useState, FC } from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,10 +9,9 @@ import {
 } from "@/components/ui/navigation-menu";
 import { PlayCircle, Code, BookOpen, Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
 
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Header: FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
