@@ -1,6 +1,24 @@
 import { create } from "zustand";
 
-const useExamples = create((set, get) => ({
+interface ExamplesState {
+  examples: Example[];
+  addExample: (newExample: Example) => void;
+  removeExample: (id: number) => void;
+  editExample: (updatedExample: Example) => void;
+  toggleSelect: (id: number) => void;
+  getSelectedExamples: () => void;
+  saveToLocalStorage: () => void;
+  loadFromLocalStorage: () => void;
+}
+
+interface Example {
+  id: number;
+  name: string;
+  sequence: number[];
+  selected: boolean;
+}
+
+const useExamples = create<ExamplesState>()((set, get) => ({
   examples: [
     {
       id: 1,
@@ -155,7 +173,7 @@ const useExamples = create((set, get) => ({
           const examples = JSON.parse(savedExamples);
           if (savedSelected) {
             const selectedIds = JSON.parse(savedSelected);
-            examples.forEach((example) => {
+            examples.forEach((example: Example) => {
               example.selected = selectedIds.includes(example.id);
             });
           }
