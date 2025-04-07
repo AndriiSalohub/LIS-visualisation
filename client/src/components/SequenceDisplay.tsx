@@ -14,7 +14,7 @@ const SequenceDisplay: FC<SequenceDisplayProps> = ({
   transitionDuration,
 }) => {
   return (
-    <Card className="p-3 sm:p-6 bg-gray-50">
+    <Card className="p-3 sm:p-6">
       <div className="grid grid-cols-1 gap-4">
         <div className="flex flex-wrap gap-2 justify-center">
           {sequence.map((num, idx) => (
@@ -22,15 +22,14 @@ const SequenceDisplay: FC<SequenceDisplayProps> = ({
               key={idx}
               className={`
                 w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center
-                border rounded-lg text-sm sm:text-base
-                ${
+                border rounded-lg text-sm sm:text-base transition-colors ${
                   idx === algorithmState.currentI
-                    ? "bg-gray-800 text-white"
+                    ? "bg-primary text-primary-foreground"
                     : idx === algorithmState.currentJ
-                      ? "bg-gray-600 text-white"
+                      ? "bg-secondary text-secondary-foreground"
                       : algorithmState.lis.includes(num)
-                        ? "bg-gray-400 text-white"
-                        : "bg-white"
+                        ? "bg-muted-foreground text-muted"
+                        : "bg-muted"
                 }
               `}
               style={{

@@ -380,7 +380,7 @@ const VisualizationPage = () => {
             totalSteps={totalSteps}
           />
 
-          <Card className="p-3 sm:p-4 bg-white">
+          <Card className="p-3 sm:p-4">
             <div className="space-y-4">
               <RangeSelection
                 minRange={minRange}
@@ -407,7 +407,7 @@ const VisualizationPage = () => {
         </div>
 
         <div className="lg:col-span-8 space-y-4">
-          <Card className="p-3 sm:p-4 bg-white">
+          <Card className="p-3 sm:p-4">
             <div className="text-sm font-medium mb-2">Поточний крок:</div>
             <div className="text-base mb-4">
               {getStepDescription(algorithmState, sequence)}
@@ -420,20 +420,20 @@ const VisualizationPage = () => {
             transitionDuration={transitionDuration}
           />
 
-          <Card className="p-3 sm:p-4 bg-white">
+          <Card className="p-3 sm:p-4">
             <div className="space-y-4">
               <div className="text-sm font-medium">Результат:</div>
               <div className="flex flex-wrap gap-2">
                 {algorithmState.lis.map((num, idx) => (
                   <div
                     key={idx}
-                    className="w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center border rounded-lg bg-gray-400 text-white text-sm sm:text-base"
+                    className="w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center border rounded-lg bg-muted text-foreground text-sm sm:text-base"
                   >
                     {num}
                   </div>
                 ))}
                 {algorithmState.lis.length === 0 && (
-                  <div className="text-gray-500">
+                  <div className="text-muted-foreground">
                     Послідовність буде показана після завершення алгоритму
                   </div>
                 )}

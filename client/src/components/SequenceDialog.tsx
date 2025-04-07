@@ -155,17 +155,19 @@ const SequenceDialog: FC<SequenceDialogProps> = ({
   };
 
   return (
-    <DialogContent className="max-w-2xl w-[90vw] max-h-[90vh] overflow-hidden flex flex-col">
+    <DialogContent className="max-w-2xl w-[90vw] max-h-[90vh] overflow-hidden flex flex-col bg-background border-border">
       <DialogHeader>
         <div className="flex justify-between items-center">
-          <DialogTitle>Деталі послідовності</DialogTitle>
+          <DialogTitle className="text-foreground">
+            Деталі послідовності
+          </DialogTitle>
           {!isEditing ? (
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsEditing(true)}
             >
-              <Pencil className="h-4 w-4" />
+              <Pencil className="h-4 w-4 text-muted-foreground" />
             </Button>
           ) : (
             <div className="flex gap-2">
@@ -183,7 +185,7 @@ const SequenceDialog: FC<SequenceDialogProps> = ({
                 <Check className="h-4 w-4 text-green-600" />
               </Button>
               <Button variant="ghost" size="icon" onClick={handleCancel}>
-                <X className="h-4 w-4 text-red-600" />
+                <X className="h-4 w-4 text-destructive" />
               </Button>
             </div>
           )}
@@ -193,22 +195,26 @@ const SequenceDialog: FC<SequenceDialogProps> = ({
       <div className="flex-1 overflow-y-auto space-y-4 pr-2">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
           {Object.entries(stats).map(([key, value]) => (
-            <div key={key} className="bg-gray-50 p-2 sm:p-3 rounded-lg">
-              <div className="text-xs text-gray-500 capitalize">{key}</div>
-              <div className="font-medium">{value}</div>
+            <div key={key} className="bg-card p-2 sm:p-3 rounded-lg">
+              <div className="text-xs text-muted-foreground capitalize">
+                {key}
+              </div>
+              <div className="font-medium text-foreground">{value}</div>
             </div>
           ))}
         </div>
 
         <div className="space-y-2">
-          <div className="text-sm font-medium">Візуальне прев'ю:</div>
-          <div className="flex flex-wrap gap-1.5 sm:gap-2 bg-gray-50 p-2 sm:p-4 rounded-lg">
+          <div className="text-sm font-medium text-foreground">
+            Візуальне прев'ю:
+          </div>
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 bg-card p-2 sm:p-4 rounded-lg">
             {(isEditing ? editedSequence : sequence).map((num, idx) => (
               <div key={idx} className="relative group">
                 {isEditing ? (
                   <div
-                    className={`flex items-center gap-1 bg-white rounded-lg shadow-sm p-1 ${
-                      invalidInputs[idx] ? "ring-2 ring-red-500" : ""
+                    className={`flex items-center gap-1 rounded-lg shadow-sm p-1 ${
+                      invalidInputs[idx] ? "ring-2 ring-destructive" : ""
                     }`}
                   >
                     <div className="relative">
@@ -217,12 +223,12 @@ const SequenceDialog: FC<SequenceDialogProps> = ({
                         inputMode="numeric"
                         value={tempInputs[idx] ?? num}
                         onChange={(e) => handleEdit(idx, e.target.value)}
-                        className={`w-16 h-10 text-center p-1 ${
-                          invalidInputs[idx] ? "text-red-600" : ""
+                        className={`w-16 h-10 text-center p-1 border-border bg-background text-foreground placeholder-muted-foreground ${
+                          invalidInputs[idx] ? "text-destructive" : ""
                         }`}
                       />
                       {invalidInputs[idx] && (
-                        <AlertCircle className="absolute -right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-red-500" />
+                        <AlertCircle className="absolute -right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
                       )}
                     </div>
                     <Button
@@ -231,11 +237,11 @@ const SequenceDialog: FC<SequenceDialogProps> = ({
                       className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={() => handleRemoveElement(idx)}
                     >
-                      <Trash2 className="h-4 w-4 text-red-600" />
+                      <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>
                 ) : (
-                  <div className="w-12 h-12 flex items-center justify-center bg-white shadow-sm rounded-lg text-sm">
+                  <div className="w-12 h-12 flex items-center justify-center shadow-sm rounded-lg text-sm text-foreground bg-muted">
                     {num}
                   </div>
                 )}
@@ -243,8 +249,8 @@ const SequenceDialog: FC<SequenceDialogProps> = ({
             ))}
             {isEditing && (
               <div
-                className={`flex items-center gap-1 bg-white rounded-lg shadow-sm p-1 ${
-                  invalidInputs.new ? "ring-2 ring-red-500" : ""
+                className={`flex items-center gap-1 rounded-lg shadow-sm p-1 ${
+                  invalidInputs.new ? "ring-2 ring-destructive" : ""
                 }`}
               >
                 <div className="relative">
@@ -254,12 +260,12 @@ const SequenceDialog: FC<SequenceDialogProps> = ({
                     value={newElement}
                     onChange={(e) => handleNewElementChange(e.target.value)}
                     placeholder="Новий"
-                    className={`w-16 h-10 text-center p-1 ${
-                      invalidInputs.new ? "text-red-600" : ""
+                    className={`w-16 h-10 text-center p-1 border-border bg-background text-foreground placeholder-muted-foreground ${
+                      invalidInputs.new ? "text-destructive" : ""
                     }`}
                   />
                   {invalidInputs.new && (
-                    <AlertCircle className="absolute -right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-red-500" />
+                    <AlertCircle className="absolute -right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-destructive" />
                   )}
                 </div>
                 <Button
@@ -274,7 +280,7 @@ const SequenceDialog: FC<SequenceDialogProps> = ({
               </div>
             )}
             {hasInvalidInputs && (
-              <div className="text-sm text-red-600 flex items-center gap-2">
+              <div className="text-sm <text-destructive flex items-center gap-2">
                 <AlertCircle className="h-4 w-4" />
                 Виправте некоректні значення перед збереженням
               </div>
@@ -283,20 +289,29 @@ const SequenceDialog: FC<SequenceDialogProps> = ({
         </div>
 
         <div className="space-y-2">
-          <div className="text-sm font-medium">Необроблена послідовність:</div>
-          <div className="bg-gray-50 p-2 sm:p-4 rounded-lg">
-            <pre className="text-xs sm:text-sm whitespace-pre-wrap break-all font-mono">
+          <div className="text-sm font-medium text-foreground">
+            Необроблена послідовність:
+          </div>
+          <div className="bg-card p-2 sm:p-4 rounded-lg">
+            <pre className="text-xs sm:text-sm whitespace-pre-wrap break-all font-mono text-foreground">
               [{formatFullSequence(isEditing ? editedSequence : sequence)}]
             </pre>
           </div>
         </div>
       </div>
 
-      <div className="flex justify-end space-x-2 pt-4 border-t mt-4">
-        <Button onClick={onLoad} className="w-20 sm:w-24">
+      <div className="flex justify-end space-x-2 pt-4 border-t mt-4 border-border">
+        <Button
+          onClick={onLoad}
+          className="w-20 sm:w-24 bg-foreground text-background hover:bg-foreground/90"
+        >
           Завантажити
         </Button>
-        <Button variant="outline" onClick={onClose} className="w-20 sm:w-24">
+        <Button
+          variant="outline"
+          onClick={onClose}
+          className="w-20 sm:w-24 border-border text-foreground hover:bg-muted"
+        >
           Закрити
         </Button>
       </div>

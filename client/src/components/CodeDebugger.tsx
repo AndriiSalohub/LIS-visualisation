@@ -80,7 +80,7 @@ const CodeDebugger: FC<CodeDebuggerProps> = ({ algorithmState, sequence }) => {
     <div className="fixed bottom-4 left-4 z-10 w-96">
       <Button
         variant="outline"
-        className="w-full justify-between"
+        className="w-full justify-between border-border text-foreground hover:bg-muted"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>Візуальна відладка коду</span>
@@ -100,24 +100,24 @@ const CodeDebugger: FC<CodeDebuggerProps> = ({ algorithmState, sequence }) => {
             transition={{ duration: 0.2 }}
             className="mt-2 overflow-hidden"
           >
-            <Card className="mt-2 p-4 max-h-[60vh] overflow-y-auto bg-white">
+            <Card className="mt-2 p-4 max-h-[60vh] overflow-y-auto">
               <div className="space-y-4">
                 {Object.entries(codeStructure).map(([key, section]) => (
                   <div
                     key={key}
                     className={`p-4 rounded-lg ${
-                      activeSection === key ? "bg-gray-100" : "bg-white"
+                      activeSection === key ? "bg-muted" : "bg-card"
                     }`}
                   >
                     <h3 className="font-medium mb-2">{section.title}</h3>
-                    <pre className="text-sm bg-gray-800 text-white p-3 rounded-md overflow-x-auto">
+                    <pre className="text-sm bg-muted text-foreground p-3 rounded-md overflow-x-auto">
                       {section.code.map((line, idx) => (
                         <div
                           key={idx}
                           className={`${
                             activeSection === key &&
                             activeLines.includes(idx + 1)
-                              ? "bg-blue-500/30"
+                              ? "bg-primary/30"
                               : ""
                           }`}
                         >

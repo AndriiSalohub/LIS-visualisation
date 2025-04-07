@@ -31,7 +31,7 @@ const DocumentationPage = () => {
       <div className="space-y-6">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Документація</h1>
-          <p className="text-gray-600 max-w-3xl mx-auto">
+          <p className="text-muted-foreground max-w-3xl mx-auto">
             Ласкаво просимо до повного довідника по платформі візуалізації
             алгоритму LIS! Тут ви знайдете все необхідне для розуміння та
             ефективного використання нашого інструменту. Ця документація охоплює

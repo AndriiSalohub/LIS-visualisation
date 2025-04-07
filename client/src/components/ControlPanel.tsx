@@ -48,15 +48,19 @@ const ControlPanel: FC<ControlPanelProps> = ({
     totalSteps > 0 ? Math.min((currentStep / totalSteps) * 100, 100) : 0;
 
   return (
-    <Card className="p-3 sm:p-4 bg-white">
+    <Card className="p-3 sm:p-4">
       <div className="space-y-4">
-        <div className="relative h-6 bg-gray-200 rounded-sm overflow-hidden">
+        <div className="relative h-6 bg-muted rounded-sm overflow-hidden">
           <div
             className="absolute h-full bg-green-500 transition-all duration-200"
             style={{ width: `${progress}%` }}
           />
-          <div className="absolute inset-0 flex items-center justify-center text-sm">
-            <span className={currentStep === totalSteps ? "text-white" : ""}>
+          <div className="absolute inset-0 flex items-center justify-center text-sm text-foreground">
+            <span
+              className={
+                currentStep === totalSteps ? "text-primary-foreground" : ""
+              }
+            >
               {currentStep} / {totalSteps}
             </span>
           </div>
@@ -64,7 +68,7 @@ const ControlPanel: FC<ControlPanelProps> = ({
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-2">
           <div className="flex items-center space-x-2">
             <Switch checked={isAutoMode} onCheckedChange={setIsAutoMode} />
-            <span>Автоматичне відтворення</span>
+            <span className="text-foreground">Автоматичне відтворення</span>
           </div>
           <div className="flex space-x-2">
             <Button
@@ -72,6 +76,7 @@ const ControlPanel: FC<ControlPanelProps> = ({
               size="icon"
               onClick={stepBack}
               disabled={isAutoMode || currentHistoryIndex <= 0}
+              className="border-border text-foreground hover:bg-muted"
             >
               <StepBack className="h-4 w-4" />
             </Button>
@@ -80,6 +85,7 @@ const ControlPanel: FC<ControlPanelProps> = ({
               size="icon"
               onClick={() => setIsPlaying(!isPlaying)}
               disabled={!isAutoMode || algorithmState.currentI === -2}
+              className="border-border text-foreground hover:bg-muted"
             >
               {isPlaying ? (
                 <Pause className="h-4 w-4" />
@@ -92,10 +98,16 @@ const ControlPanel: FC<ControlPanelProps> = ({
               size="icon"
               onClick={calculateStep}
               disabled={isAutoMode || algorithmState.currentI === -2}
+              className="border-border text-foreground hover:bg-muted"
             >
               <StepForward className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={resetVisualization}>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={resetVisualization}
+              className="border-border text-foreground hover:bg-muted"
+            >
               <RotateCcw className="h-4 w-4" />
             </Button>
           </div>
@@ -106,11 +118,11 @@ const ControlPanel: FC<ControlPanelProps> = ({
             checked={showDetailedView}
             onCheckedChange={setShowDetailedView}
           />
-          <span>Детальна візуалізація</span>
+          <span className="text-foreground">Детальна візуалізація</span>
         </div>
 
         <div className="space-y-2">
-          <div className="text-sm">Швидкість анімації</div>
+          <div className="text-sm text-foreground">Швидкість анімації</div>
           <Slider
             value={[animationSpeed]}
             onValueChange={([value]) => setAnimationSpeed(value)}
@@ -122,7 +134,9 @@ const ControlPanel: FC<ControlPanelProps> = ({
         </div>
 
         <div className="space-y-2">
-          <div className="text-sm">Швидкість автоматичного виконання</div>
+          <div className="text-sm text-foreground">
+            Швидкість автоматичного виконання
+          </div>
           <Slider
             value={[speed]}
             onValueChange={([value]) => setSpeed(value)}

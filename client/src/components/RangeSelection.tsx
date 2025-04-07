@@ -29,39 +29,43 @@ const RangeSelection: FC<RangeSelectionProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4">
-        <div className="text-sm font-medium">Діапазон генерації:</div>
+        <div className="text-sm font-medium text-foreground">
+          Діапазон генерації:
+        </div>
         <div className="flex flex-wrap gap-4">
           <div className="flex flex-wrap items-end gap-4">
             <div className="w-24">
-              <label className="text-xs text-gray-500 mb-1 block">
+              <label className="text-xs text-muted-foreground mb-1 block">
                 Мінімум
               </label>
               <Input
                 type="number"
                 placeholder="Мін"
-                className="w-full"
+                className="w-full border-border bg-background text-foreground placeholder-muted-foreground"
                 value={minRange}
                 onChange={handleMinRangeChange}
               />
             </div>
             <div className="w-24">
-              <label className="text-xs text-gray-500 mb-1 block">
+              <label className="text-xs text-muted-foreground mb-1 block">
                 Максимум
               </label>
               <Input
                 type="number"
                 placeholder="Макс"
-                className="w-full"
+                className="w-full border-border bg-background text-foreground placeholder-muted-foreground"
                 value={maxRange}
                 onChange={handleMaxRangeChange}
               />
             </div>
             <div className="w-24">
-              <label className="text-xs text-gray-500 block">Довжина</label>
+              <label className="text-xs text-muted-foreground block">
+                Довжина
+              </label>
               <Input
                 type="number"
                 placeholder="Розмір"
-                className="w-full"
+                className="w-full border-border bg-background text-foreground placeholder-muted-foreground"
                 value={sequenceLength}
                 onChange={handleSequenceLengthChange}
               />
@@ -86,7 +90,7 @@ const RangeSelection: FC<RangeSelectionProps> = ({
           </div>
         </div>
         {error && (
-          <div className="text-sm text-red-500 mt-2 p-2 bg-red-50 rounded-md">
+          <div className="text-sm text-destructive bg-destructive/10 mt-2 p-2 bg-red-50 rounded-md">
             {error}
           </div>
         )}

@@ -24,16 +24,18 @@ const SavedExamples: FC<SavedExamplesProps> = ({
 }) => {
   return (
     <div className="space-y-2">
-      <div className="text-sm font-medium">Збережені приклади:</div>
+      <div className="text-sm font-medium text-foreground">
+        Збережені приклади:
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[200px] overflow-y-auto pr-1">
         {savedExamples.map((example) => (
           <div
             key={example.id}
-            className="group relative flex items-center bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors"
+            className="group relative flex items-center bg-card rounded-lg p-2 hover:bg-muted transition-colors"
           >
             <Button
               variant="ghost"
-              className="w-full h-auto text-left justify-start py-1 px-2"
+              className="w-full h-auto text-left justify-start py-1 px-2 text-foreground hover:bg-transparent"
               onClick={() => {
                 setSequence(example.sequence);
                 resetVisualization();
@@ -72,7 +74,7 @@ const SavedExamples: FC<SavedExamplesProps> = ({
           </div>
         ))}
         {savedExamples.length === 0 && (
-          <div className="text-sm text-gray-500 p-2">
+          <div className="text-sm text-muted-foreground p-2">
             Відсутні збережені криклади
           </div>
         )}
